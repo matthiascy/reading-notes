@@ -1,0 +1,292 @@
+#+TITLE: The JavaScirpt Anthology, 101 Essential Tips, Tricks & Hacks - Notes
+#+AUTHOR: Chen Yang(matthias)
+#+EMAIL: matthias_cy@outlook.com
+* JavaScript基础
+** JavaScript的限制与原则
+*** 由于安全问题而被禁止的操作：
+  · 不能打开和读取文件（除非在特别的环境下）；
+  · 不能在用户的计算机上创建和编辑文件（除了cookie）；
+  · 不能读取HTTP post数据；
+  · 不能读取系统设置，或者用户计算机上的其他任何数据，除非是语言本身提供的数据或者是环境宿主对象（host object）；
+  · 不能修改文本输入区域的值；
+  · 不能修改从其他区域载入的document的显示方式；
+  · 不能关闭和修改工具栏或者其他任何没有像脚本开放的窗口元素。
+*** JavaScript的原则
+**** 渐进增强
+    为没有JavaScript的用户着想：
+    #+BEGIN_SRC html
+    <script type="text/javascript" src="sourcefilename.js"><script>
+    #+END_SRC
+**** 谨慎的编码
+    内容从行为中分离：
+    HTML，CSS，JavaScript
+**** 一致的编码
+    使用括号和分号结束符
+** 脚本调试
+*** 内建的错误报告
+*** 使用alert
+*** 使用try-catch
+   基本形式：
+   #+BEGIN_SRC javascript
+   try {
+     ...
+   } catch (err) {
+     ...
+   }
+   //使用for-in来便错误对象获得信息
+   for (var i in err) {
+     ...
+   }
+   #+END_SRC
+*** 向页面和窗口中写入数据
+   使用innerHTML属性，将数据写入页面中：
+   #+BEGIN_SRC javascript
+   //使用一个数组的内容创建一个列表，然后写入test div
+   var test = document.getElementById("testdiv");
+   test.innerHTML += "<ul>";
+   for (var i = 0; i < data.length; i++) {
+     test.innerHTML += "<li>" + i + "=" + data[i] + "</li>";
+   }
+   test.innerHTML += "</ul>";
+   #+END_SRC
+*** 外部调试器
+   Venkman for Mozilla and Firefox;
+   Microsoft Script Debugger for Windows Internet Explorer
+** 基本语法
+*** Math
+| Method      | description   |
+|-------------+---------------|
+| Math.ceil   | round up      |
+| Math.floor  | round down    |
+| Math.round  | round         |
+| Math.pow    | power         |
+| Math.sqrt   | square root   |
+| Math.random | pseudo random |
+... more:
+[[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math]]
+*** 数字&字符串
+           String
+   数字  ----------> 字符串
+
+         Number or parseInt()/parseFloat()
+   字符串 ---------> 数字
+
+*** String
+   | Method                           | Description          |
+   |----------------------------------+----------------------|
+   | toUpperCase()                    | convert to uppercase |
+   | toLowerCase()                    | convert to lowercase |
+   | indexOf(searchValue[,fromIndex]) |                      |
+   | subString(indexA[, index])       | subset of a string   |
+   more:
+   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+*** 正则表达式
+   第一种方法使用正则表达式的写法，正则表达模式由两个斜线隔开：
+   #+BEGIN_SRC javascript
+   var a = /pattern.*/;
+   #+END_SRC
+
+   第二种方法通过传递一个模式字符串构造函数来初始化一个新的RegExp对象，从而创建正则表达式：
+   #+BEGIN_SRC javascript
+   var a = new RegExp("pattern.*");
+   #+END_SRC
+
+   more about Regular Expression:
+   http://www.regular-expressions.info/
+*** 使用数组
+    For example:
+    #+BEGIN_SRC javascript
+    var planets = ["mercury", "venus", "earth"];
+    // or like this
+    var planets = new Array("mercury", "venus", "earth");
+    #+END_SRC
+*** 字符串代替数字索引
+    无法直接构造和拼接，必须先创建数组，然后根据索引拼装：
+    #+BEGIN_SRC javascript
+    var planets = [];
+    planets["inner"] = ["mercury", "venus", "earth"];
+    planets["outer"] = ["uranus", "neptune", "pluto"];
+    #+END_SRC
+    之后就可以用planets["inner"][1]来引用"venus"。。。
+
+    对于字符串索引的数组，length属性是无意义的，应该使用in枚举来遍历：
+    #+BEGIN_SRC javascript
+    for (var i in planets) {
+     ...
+    }
+    #+END_SRC
+
+    实际上，字符串索引的数组也可以通过直接书写属性名的方式创建：
+    #+BEGIN_SRC javascript
+    var planets = [];
+    planets.inner = ["mercury", "venus", "earth"];
+    planets.outter = ["uranus", "nepture", "plutho"];
+    #+END_SRC
+    也可以这样：
+    #+BEGIN_SRC javascript
+    var myData = {"name1":value1, "name2":value2, ...};
+    #+END_SRC
+*** 增删数组成员
+    Syntax:
+    #+BEGIN_SRC javascript
+    arr.push(element1, ..., elementN);
+    arr.slice([begin[, end]]);
+    #+END_SRC
+*** 排序
+    类似于C的qsort。
+* DOM文档对象模型
+  浏览器通过文档对象模型DOM，赋予了JavaScript访问网页元素的能力。其实就是对网页HTML中的各种元素的一种内部表示。
+  DOM可以被看作是与多节点组成的树。HTML文档中，每个标签（tag）都代表了一个节点；在一个节点内部，任何标签代表的
+  节点，都可以被认为是该节点的子节点，这些节点被称为元素节点。常见的有：
+  文档节点（document node），文本节点（text node），属性节点（attribute node）
+  文档节点代表了文档本身，也是DOM数的根。
+  文本节点代表了一个元素标签内部的文本。
+  属性节点代表了一个开放的元素标内部所制定的属性。
+
+  如下简单的HTML结构：
+  #+BEGIN_SRC html
+  <html>
+    <head>
+      <title>Stairway to the stars</title>
+    </head>
+    <body>
+      <h1 id="top">Stairway to the starts</h1>
+      <p class="introduction">For centuries, the stars have been more to humankind than just burning balls of gas..</p>
+    </body>
+  </html>
+  #+END_SRC
+  #+BEGIN_SRC ditaa :file htmlDOM.png :cmdline -r -S
+  +----------+
+  | document |
+  +----+-----+
+       |
+       |      +-------+
+       +------+  html |
+              +---+---+
+                  |
+                  |       +--------+
+                  +-------+  head  |
+                  |       +----+---+
+                  |            |
+                  |            |        +---------+
+                  |            +--------+  title  |
+                  |                     +----+----+
+                  |                          |
+                  |                          |            +-----------------------+
+                  |                          +------------+ Stairway to the stars |
+                  |       +--------+                      |        cGRE           |
+                  +-------+  body  |                      +-----------------------+
+                          +----+---+
+                               |
+                               |        +--------+        +------+
+                               +--------+   h1   +--------+  id  |
+                               |        +----+---+        +------+
+                               |             |
+                               |             |            +-----------------------+
+                               |             +------------+         cGRN          |
+                               |                          | Stairway to the stars |
+                               |                          +-----------------------+
+                               |        +--------+        +----------+
+                               +--------+    p   +--------+   class  |
+                                        +----+---+        +----------+
+                                             |
+                                             |            +-----------------------+
+                                             +------------+ For centuries, the... |
+                                                          +-----------------------+
+  #+END_SRC
+** 访问元素
+   #+BEGIN_SRC javascript
+   document.getElementById() -- 通过唯一的ID属性值，找到元素
+   document.getElementsByTagName() -- 找到属于某一标签的所有元素
+   #+END_SRC
+*** 元素的固有属性
+    #+BEGIN_SRC javascript
+    node.childNodes
+    node.firstChild
+    node.lastChild
+    node.parentNode
+    node.nextSibling
+    node.previousSibling
+    #+END_SRC
+** 创建元素节点和文本节点
+   创建新元素：
+   #+BEGIN_SRC javascript
+   var newAnchor = document.createElement("a");
+   #+END_SRC
+
+   元素内部的文本实际上是这个元素的一个子文本节点，需要单独创建。文本节点有自己的创建函数createTextNode:
+   #+BEGIN_SRC javascript
+   var anchorText = document.createTextNode("monoceros");
+   #+END_SRC
+   如果要修改现有文本节点，可以通过nodeValue属性来访问其文本：
+   #+BEGIN_SRC javascript
+   var textNode = document.createTextNode("monoceros");
+   var oldText = textNode.nodeValue;
+   textNode.nodeValue = "pyxis";
+   #+END_SRC
+
+   可以使用appendChild将一个元素节点或者一个文本节点添加到某元素的子节点列表的最后。
+   #+BEGIN_SRC javascript
+   appendChild()
+   #+END_SRC
+   如下HTML片段：
+   #+BEGIN_SRC html
+   <p id="starLinks">
+     <a href="sirius.html">Sirius</a>
+   </p>
+   #+END_SRC
+   也可以使用DOM的函数来创建和插入一个链接到段落的末尾：
+   #+BEGIN_SRC javascript
+     var anchorText = document.createTextNode("monoceros");
+
+     var newAnchor = document.createElement("a");
+     newAnchor.appendChild(anchorText);
+
+     var parent = document.getElementById("starLinks");
+     var newChild = parent.appendChild(newAnchor);
+   #+END_SRC
+   执行后的DOM状态应该是这样：
+   #+BEGIN_SRC html
+   <p id="starLinks">
+     <a href="sirius.htm">Sirius</a><a>monoceros</a>
+   </p>
+   #+END_SRC
+* Tricks
+**  添加任意数量的load事件处理：
+    #+BEGIN_SRC javascript
+    function addLoadListener(fn) {
+      if (typeof window.addEventListener != 'undefined') {
+        window.addEventListener('load', fn, false);
+      } else if (typeof document.addEventListener != 'undefined') {
+        document.addEventListener('load', fn, false);
+      } else if (typeof window.attachEvent != 'undefined') {
+        window.attachEvent('onload' != 'undefined');
+      } else {
+        var oldfn = window.onload;
+        if (typeof window.onload != 'function') {
+          window.onload = fn;
+        } else {
+          window.onload = function() {
+            oldfn();
+            fn();
+          };
+        }
+      }
+    }
+    #+END_SRC
+
+
+** 将数字转化为序数
+   #+BEGIN_SRC javascript
+   function getOrdinal(n) {
+     var ord = "th";
+     if (n%10 == 1 && n%100 != 11) {
+       ord = "st";
+     } else if (n%10 == 2 && n%100 != 12) {
+       ord = "nd";
+     } else if (n%10 == 3 && n%100 != 13) {
+       ord = "rd";
+     }
+     return ord;
+   }
+   #+END_SRC
