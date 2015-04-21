@@ -1,0 +1,42 @@
+#+TITLE: HTML5 Mastery: Semantics, Standards, and Styling - Notes
+#+AUTHOR: Chen Yang(matthias)
+#+EMAIL: matthias_cy@outlook.com
+* HTML术语和概念
+  HTML文档有三大基础构建：元素，属性和文字。
+** 元素
+   元素就是HTML里的M，用来告诉浏览器如何处理一些内容的标记。每个元素有一个关键字，定义了他们代表的是什么。
+   不同的元素定义了不同的行为。
+   元素与标签有一些细微的差别。标签是元素的一部分。
+
+   空元素
+   在HTML里，空元素（也叫void element）简单的写成<img>、<br>、 <meta>、 <hr>, 不需要结束标签。在
+   XHTML、HTML的XML形式里，空元素需要一个空格和斜杠，比如<img/>、<br/>、<meta/>、或者<hr/>，被称之
+   为自关闭标签（self-closing tag）。
+** 属性
+   属性出现在元素的开始标签里，用来改变元素某些方面的行为。可以看作键/值对，比如：
+   #+BEGIN_SRC html
+   <a href="contact.html">Here is some text that links to a contact page.</p>
+   #+END_SRC
+** 文档模型（Document Object Model, DOM）
+   它是用来以节点树来表示文档的标准方法。节点表示了页面的元素、属性、文字内容。通过分支和树形结构，DOM描
+   述了节点怎样连在一起。
+* HTML5新特性
+** 向后兼容
+** 将浏览器端处理错误的方式标准化
+** 简化doctype
+   HTML经常以文档声明（doctype declaration）开始，过去是这样：
+   HTML 4.01
+   #+BEGIN_SRC html
+   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+   #+END_SRC
+   或者
+   XHTML 1.0
+   #+BEGIN_SRC html
+   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+   #+END_SRC
+   因为HTML5是向后兼容的，所以只需要说这个页面显示的是HTML，因此doctype被简化为：
+   #+BEGIN_SRC html
+   <!doctype html>
+   #+END_SRC
+** 简化的字符编码
+   HTML5标准强烈建议所有的HTML文档都设置字符编码。推荐的方法是让服务器把它作为响应头部的一部分发出去
