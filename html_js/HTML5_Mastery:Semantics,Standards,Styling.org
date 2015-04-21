@@ -408,7 +408,76 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
       访问[[http://html5.validator.nu]] 或 [[http://validator.w3.org]]
       两者都提供了页面，可以根据给出的网站URL、上传HTML文件或直接输入HTML来进行校验。
 **** 文档元数据（document metadata）和脚本元素(scripting elements)
-**** 文档区块元素（document sectioning elements）
+     在head根标签后，出现的是head元素的开始标签，它包括文档的元数据元素，其用于指定页面属性，比如浏览器显示的文档标题、
+     页面元素的默认URL、字符编码信息，以及外链和内嵌的CSS样式表。
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| property | meta | flow | sectionin | heading | phrasing | embedded | interactive |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| title    | *    |      |           |         |          |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| base     | *    |      |           |         |          |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| meta     | *    | *    |           |         | *        |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| link     | *    | *    |           |         | *        |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| style    | *    | *    |           |         |          |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| script   | *    | *    |           |         | *        |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+| noscript | *    | *    |           |         | *        |          |             |
+|----------+------+------+-----------+---------+----------+----------+-------------|
+***** 网页信息：title和meta
+****** title
+      title是唯一的头部必需元素。
+      使用得当的文档标题的好处：
+      · 更好的搜索引擎排名
+      · 更加方便
+      · 更好的可用性
+****** meta
+      meta元素的一个通常作用是设置页面编码，但也经常被用来设置一系列元数据信息和其它指令的键/值对。
+      当创建”键“时，meta元素用http-equiv或name两个中的一个，值用cotent来设置。
+      #+BEGIN_SRC html
+      <!-- defines a set of keywords for the page's content -->
+      <meta name="keywords" content="html5, css, javascript, semantic web, web apps"/>
+
+      <!-- refreshes the page every 15 seconds -->
+      <meta http-equiv="refresh" content="15"/>
+      #+END_SRC
+      详细的http-equiv和name属性参考：
+      WHATWGPragamaExtensions: [[http://wiki.whatwg.org/wiki/PragmaExtensioins]]
+      MetaExtensions wiki: http://wiki.whatwg.org/wiki/MetaExtensions
+***** 链接、样式和资源：base，link，style
+****** base
+       每个文档只能有一个base元素。他应该出现于文档头部，早于任何其他包含URL的元素属性。
+       作用:
+       减少重复输入相同的根URL。它的两个属性href和target，指定了用的URL和默认目标（可用时）。
+       例如，使用target属性说明链接是在新窗口还是在当前窗口中打开。
+       比如，在头部出现了：
+       #+BEGIN_SRC html
+       <base href="http://example.com/portfolio/" target="_blank"/>
+       #+END_SRC
+       然后在body里有：
+       #+BEGIN_SRC html
+       <a href="photographs.html">Photography</a>
+       #+END_SRC
+       那么，点击链接会在新的窗口中找到链接网页。
+****** link
+       link元素有属性href, rel, media, hreflang, type, sizes，还有全局属性。至少href和rel是常用的。
+       href指定了链接的资源的地址（URL），而rel指定了资源的类型。
+       将样式表引入页面：
+       #+BEGIN_SRC html
+       <link href="main.css" rel="stylesheet" type="text/css"/>
+       #+END_SRC
+****** style
+       style元素允许在HTML中直接插入CSS样式规则。
+***** 增加行为和后备内容：script和noscript
+****** script
+       不仅支持直接在HTML文但里写入内嵌客户端JavaScript代码，也允许通过外部文件载入。
+****** noscript
+       用于在浏览器禁用和不支持脚本时来展示内容。
+**** 文档区块元素（document sectioning elemaents）
+
 **** 内容分组元素（content grouping elements）
 **** 文本级语义元素（text-level semantics elements）
 **** 表格数据元素（tabular data elements）
