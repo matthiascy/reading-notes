@@ -20,23 +20,398 @@
 ** 文档模型（Document Object Model, DOM）
    它是用来以节点树来表示文档的标准方法。节点表示了页面的元素、属性、文字内容。通过分支和树形结构，DOM描
    述了节点怎样连在一起。
-* HTML5新特性
-** 向后兼容
-** 将浏览器端处理错误的方式标准化
-** 简化doctype
-   HTML经常以文档声明（doctype declaration）开始，过去是这样：
-   HTML 4.01
-   #+BEGIN_SRC html
-   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-   #+END_SRC
-   或者
-   XHTML 1.0
-   #+BEGIN_SRC html
-   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-   #+END_SRC
-   因为HTML5是向后兼容的，所以只需要说这个页面显示的是HTML，因此doctype被简化为：
-   #+BEGIN_SRC html
-   <!doctype html>
-   #+END_SRC
-** 简化的字符编码
-   HTML5标准强烈建议所有的HTML文档都设置字符编码。推荐的方法是让服务器把它作为响应头部的一部分发出去
+* HTML5
+** 简介
+*** 向后兼容
+*** 将浏览器端处理错误的方式标准化
+*** 简化doctype
+    doctype说明了以何种文档类型定义（Document Type Definition, DTD）
+    HTML经常以文档声明（doctype declaration）开始，过去是这样：
+    HTML 4.01
+    #+BEGIN_SRC html
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+    #+END_SRC
+    或者
+    XHTML 1.0
+    #+BEGIN_SRC html
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    #+END_SRC
+    因为HTML5是向后兼容的，所以只需要说这个页面显示的是HTML，因此doctype被简化为：
+    #+BEGIN_SRC html
+    <!doctype html>
+    #+END_SRC
+    为了兼容老HTML生成系统，下面的HTML5声明也是接受的：
+    #+BEGIN_SRC html
+    <!doctype html SYSTEM "about:legacy-compat">
+    #+END_SRC
+*** doctype的目的
+    1. 告诉用户代理和校验器这个文档是按照什么DTD写的。
+    2. 对于实际操作，最重要的是通知浏览器读取文档时用那种方法解析。
+       文档的三种解析方式：
+       · 非怪异（标准）模式
+       · 怪异模式
+       · 部分怪异（几乎标准）模式
+    浏览器根据doctype字符串的存在、不存在及它的值来确定哪种渲染模式。
+*** 简化的字符编码
+    HTML5标准强烈建议所有的HTML文档都设置字符编码。推荐的方法是让服务器把它作为响应头部的一部分发送，HTTP Content-Type。
+    如果无法实现，可以使用在HTML文档头部的meta元素。
+    在HTML 4.01里，meta元素是这样的：
+    #+BEGIN_SRC html
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    #+END_SRC
+    在HTML5里，这种写法仍然会被向后兼容，但推荐写法更短，并且包含一个新属性 - charset：
+    #+BEGIN_SRC html
+    <meta charset="uft-8"/>
+    #+END_SRC
+*** 新的内容模型类别 #<<content-model>>
+    内容模型类别（cotent model）用来指定特定HTML元素包含的内容类型。传统上被归为两类：
+    块级（block）和行内（inline）
+    在HTML5里被扩展到了7个主要类别：
+    · 元数据内容（metadata content）
+    · 文档流内容（flow content）
+    · 区块内容（sectioning content）
+    · 标题内容（heading content）
+    · 语句内容（phrasing content）
+    · 内嵌内容（embedded content）
+    · 交互内容（interactive content）
+*** 新元素
+*** 微数据
+*** 内嵌MathML和SVG
+*** API
+    包括可以通过class来选择元素的JavaScript API。比如：
+    #+BEGIN_SRC javascript
+    document.getElementByClassName("aClass")[0]
+    #+END_SRC
+*** 不再遵循SGML
+*** 废弃的特性
+*** 元素：
+|-----------+--------------------------------|
+| element   | replacement                    |
+|-----------+--------------------------------|
+| applet    | embed/object                   |
+|-----------+--------------------------------|
+| acronym   | abbr                           |
+|-----------+--------------------------------|
+| bgsound   | audio                          |
+|-----------+--------------------------------|
+| dir       | ul                             |
+|-----------+--------------------------------|
+| frame     | iframe/CSS                     |
+|-----------+--------------------------------|
+| frameset  |                                |
+|-----------+--------------------------------|
+| noframes  |                                |
+|-----------+--------------------------------|
+| isindex   | input from form text input     |
+|-----------+--------------------------------|
+| listing   | pre/code                       |
+|-----------+--------------------------------|
+| nextid    | global id                      |
+|-----------+--------------------------------|
+| noembed   | object as subtitution of embed |
+|-----------+--------------------------------|
+| plaintext | text/plain                     |
+|-----------+--------------------------------|
+| rb        | directly in ruby element       |
+|-----------+--------------------------------|
+| strike    | del; s                         |
+|-----------+--------------------------------|
+| xmp       | code， < %lt > &gt             |
+|-----------+--------------------------------|
+| basefont  | CSS                            |
+|-----------+--------------------------------|
+| big       | h1, strong or mark             |
+|-----------+--------------------------------|
+| blink     | CSS                            |
+|-----------+--------------------------------|
+| center    |                                |
+|-----------+--------------------------------|
+| font      |                                |
+|-----------+--------------------------------|
+| marquee   |                                |
+|-----------+--------------------------------|
+| multicol  |                                |
+|-----------+--------------------------------|
+| nobr      |                                |
+|-----------+--------------------------------|
+| spacer    |                                |
+|-----------+--------------------------------|
+| Tt        | kbd, var, code or samp         |
+|-----------+--------------------------------|
+| u         | em, b or mark                  |
+|-----------+--------------------------------|
+|           |                                |
+
+*** 属性
+|----------+--------------------------------------------------------------------------------------|
+| element  | discarded property                                                                   |
+|----------+--------------------------------------------------------------------------------------|
+| a        | charset, coords, datafld, datasrc, methods, name, rev, shape, urn                    |
+|----------+--------------------------------------------------------------------------------------|
+| area     | nohref                                                                               |
+|----------+--------------------------------------------------------------------------------------|
+| body     | alink, background, bgcolor,link, marginbottom, marginheight, margin left,            |
+|          | marginright, margintop, marginwidth, text, vlink                                     |
+|----------+--------------------------------------------------------------------------------------|
+| br       | clear                                                                                |
+|----------+--------------------------------------------------------------------------------------|
+| button   | datafld, dataformatas, datasrc                                                       |
+|----------+--------------------------------------------------------------------------------------|
+| caption  | align                                                                                |
+|----------+--------------------------------------------------------------------------------------|
+| col      | align, char, charoff, valign, width                                                  |
+|----------+--------------------------------------------------------------------------------------|
+| div      | align, datafld, dataformatas, datasrc                                                |
+|----------+--------------------------------------------------------------------------------------|
+| dl       | compact                                                                              |
+|----------+--------------------------------------------------------------------------------------|
+| embed    | align, hspace, name, vspace                                                          |
+|----------+--------------------------------------------------------------------------------------|
+| fieldset | datafld                                                                              |
+|----------+--------------------------------------------------------------------------------------|
+| form     | accept                                                                               |
+|----------+--------------------------------------------------------------------------------------|
+| h1 - h6  | align                                                                                |
+|----------+--------------------------------------------------------------------------------------|
+| head     | profile                                                                              |
+|----------+--------------------------------------------------------------------------------------|
+| hr       | align, color, noshade, size, width                                                   |
+|----------+--------------------------------------------------------------------------------------|
+| html     | version                                                                              |
+|----------+--------------------------------------------------------------------------------------|
+| iframe   | align, allowtransparency, datafld, datasrc, frameborder, hspace, logndesc,           |
+|          | marginheight, marginwidth, scrolling, vspace                                         |
+|----------+--------------------------------------------------------------------------------------|
+| img      | align, border(except if value is 0), datafld, datasrc, hspace, longdesc,             |
+|          | lowsrc, name, vspace                                                                 |
+|----------+--------------------------------------------------------------------------------------|
+| input    | align, datafld, dataformatas, datasrc, hspace, usemap, vspace                        |
+|----------+--------------------------------------------------------------------------------------|
+| label    | datafld, dataformatas, datasrc                                                       |
+|----------+--------------------------------------------------------------------------------------|
+| legend   | align, datafld, dataformatas, datasrc                                                |
+|----------+--------------------------------------------------------------------------------------|
+| li       | type                                                                                 |
+|----------+--------------------------------------------------------------------------------------|
+| link     | charset, methods, rev, target, urn                                                   |
+|----------+--------------------------------------------------------------------------------------|
+| menu     | compact                                                                              |
+|----------+--------------------------------------------------------------------------------------|
+| meta     | scheme                                                                               |
+|----------+--------------------------------------------------------------------------------------|
+| object   | align, archive, border, classid, code, codebase, codetype, datafls,                  |
+|          | dataformatas, datasrc, declare, hspace, stanby, vspace                               |
+|----------+--------------------------------------------------------------------------------------|
+| ol       | compact                                                                              |
+|----------+--------------------------------------------------------------------------------------|
+| option   | dataformatas, datasrc, name                                                          |
+|----------+--------------------------------------------------------------------------------------|
+| p        | align                                                                                |
+|----------+--------------------------------------------------------------------------------------|
+| pre      | witdth                                                                               |
+|----------+--------------------------------------------------------------------------------------|
+| script   | event, for, language                                                                 |
+|----------+--------------------------------------------------------------------------------------|
+| select   | datafld, dataformatas, datasrc                                                       |
+|----------+--------------------------------------------------------------------------------------|
+| span     | datafld, dataformatas, datasrc                                                       |
+|----------+--------------------------------------------------------------------------------------|
+| table    | align, backgorund, bgcolor, border(except if value is 1 or ""), cellpadding          |
+|          | cellspacing, dataformats, datapagesize, datasrc, frame, rules, summary, width        |
+|----------+--------------------------------------------------------------------------------------|
+| tbody    | align, background, char, charoff, valign                                             |
+|----------+--------------------------------------------------------------------------------------|
+| td       | abbr, align, axis, background, bgcolor, char, charoff, height, nowrap, valign, width |
+|----------+--------------------------------------------------------------------------------------|
+| textarea | datafld, datasrc                                                                     |
+|----------+--------------------------------------------------------------------------------------|
+| tfoot    | align, background, char, charoff, valign                                             |
+|----------+--------------------------------------------------------------------------------------|
+| th       | abbr, align, axis, background, bgcolor, char, charoff, height, nowrap, valign, width |
+|----------+--------------------------------------------------------------------------------------|
+| thead    | align, background, char, charoff, valign                                             |
+|----------+--------------------------------------------------------------------------------------|
+| tr       | align, background, bgcolor, char, charoff, valign                                    |
+|----------+--------------------------------------------------------------------------------------|
+| ul       | compact, type                                                                        |
+|----------+--------------------------------------------------------------------------------------|
+*** 浏览器支持情况
+    可以给出支持情况的网站：
+    http://caniuse.com
+    and
+    http://html5test.com
+** 元素
+*** 全局属性
+    所有HTML元素都拥有的全局属性
+|-----------------|
+| accesskey       |
+| class           |
+| contenteditable |
+| contextmenu     |
+| dir             |
+| draggable       |
+| dropzone        |
+| hidden          |
+| id              |
+| lang            |
+| spellcheck      |
+| style           |
+| tabindex        |
+| title           |
+| data-*          |
+|-----------------|
+more: http://www.w3.org/TR/2011/WD-html5-20110525/
+**** 可访问性
+     用accesskey和tabindex属性可以通过键盘来访问页面元素，对于有行动障碍的用户会有帮助。
+     在元素上设置accesskey属性后，就可通过按下键盘上的键来激活元素。
+
+     tabindex，在页面上反复按下Tab，不同的元素将会被聚焦。tabindex从小数字开始
+     #+BEGIN_SRC html
+     <ul>
+       <li><a href="first.html" tabindex="1">First Item Active</a></li>
+       <li><a href="third.html" tabindex="3">Third Item Active</a></li>
+       <li><a href="second.html" tabindex="2">Second Item Active</a></li>
+     </ul>
+     #+END_SRC
+**** 元数据
+     title属性为元素提供了一个参考信息。通常的形式是当鼠标悬浮在一个链接、表单输入框或缩写时，展示一个小提示。
+     #+BEGIN_SRC html
+     <a href="http://w3.org" title="World Wide Web Consortium">W3C</a>
+     #+END_SRC
+     当鼠标悬浮到链接文字"W3C"上时，会弹出小提示"World Wide Web Consortium"。
+
+     lang，指定了元素内文本书写语言
+     #+BEGIN_SRC html
+     <html lang="en">
+     #+END_SRC
+**** 唯一标识
+***** id
+      · 每个页面，一个值能且仅能标识一个元素。
+***** class
+      · 每个页面可以出现多个。
+      · 也个特定的class属性可以有多个class名，用空格分隔。
+***** 引用
+****** CSS
+       id前用(#)，class前用(.),像这样：
+       #+BEGIN_SRC css
+       #about-text { background: blue; }
+       .homepage {color: white; }
+       #+END_SRC
+****** JavaScript
+       #+BEGIN_SRC javascript
+       document.getElementById("about-text");
+       document.getElementByClassName("homepage");
+       #+END_SRC
+**** 可编辑性
+     contenteditable属性用在新的编辑API（Editing API）。编辑API允许对页面内容的实时编辑。
+     这个概念是让HTML元素可以被编辑，使网页表单富文本编辑器以及类似应用可以被较容易地创建（例如，用网页来创建富文本的
+     博客文章）。
+**** 拼写检查
+     spellcheck属性，用于指定一个元素是否因该进行拼写检查。
+**** 隐藏元素
+     hidden属性，用于隐藏和显示HTML元素。这与CSS中 display:none 属性的效果一样。
+     下面的HTML和JavaScript片段展示了怎样用hidden来显示和隐藏内容：
+     #+BEGIN_SRC html
+     <dl id="fox">
+       <dt></dt>
+       <dd id="latin" hidden>Vulpes vulpes</dd>
+     </dl>
+     #+END_SRC
+     JavaScript增加了在鼠标划过名字时显示隐藏的功能：
+     #+BEGIN_SRC javascript
+     // ie
+     function toggleLatin() {
+       var entry = document.getElementById("fox");
+       var latin = document.getElementById("latin");
+       entry.onmouseover = function() {
+         latin.hidden = false;
+       };
+       entry.onmouseout = function() {
+         latin.hidden = true;
+       };
+     }
+     window.onload = toggleLatin();
+     #+END_SRC
+**** 拖拽
+     draggable和dropzone属性是HTML朝着构建应用而不是文档的方向发展的例子。但是当可用时，这些属性允许HTML元素被拖动到
+     页面的一个部分并且放置到另一个元素上，剩下的需要JavaScript事件来控制。
+**** 样式
+     sytle属性用来直接在元素上应用CSS样式。
+**** 文字方向
+     dir属性用来控制文本流的方向。如果整个文本块使用从右向左排列的语言，那么使用"rtl",代表right-to-left，并且
+     在容器元素上使用"ltr",代表left-ro-right，这样，文本和标点都护翻转。
+     #+BEGIN_SRC html
+     <p dir="rtl">When redered by a brower, this paragraph will apera aligned to the right.</p>
+     <p>While this paragraph will not because it lacks a <code>dir</code> attribute.</p>
+     #+END_SRC
+     CSS的direction属性也提供了相同的功能，可用的值有：
+     inherit，ltr，rtl
+     然而，不应该使用这样的CSS，因为这种信息应该内嵌在页面本身，这样即使关联的样式表被禁用了，文本的内容仍然可以被确定。
+**** 自定义数据
+     data-*时多种属性的混合，任何属性名都可以使用来在HTML元素上存储数据。
+
+*** 内容模型类别
+    7个类别[[content-model]]
+    more:
+    [[http://dev.w3.org/html5/spec-author-view/index.html#element-content-categories]]
+    [[http://whatwg.org/specs/web-apps/current-work/#element-content-categories]]
+**** 根元素（root element）
+     html元素，它包含了文档里所有其他的HTML元素，也叫根元素。
+     根元素是大量标签可选的元素中的一个。虽然标签可选，但是元素没有被忽略。可选元素如果被省略了，那么会被隐性
+     包含（body是个例外，如果没有页面内容，他会被忽略）。比如，以下是一个完全合法的HTML5文档：
+     #+BEGIN_SRC html
+     <!doctype html><title>Tiny HTML5</title><p>This is a valid HTML5 page!
+     #+END_SRC
+***** 开始和结束标签可选的HTML元素
+| element  | starting tag | ending tag |
+|----------+--------------+------------|
+| body     | optional     | optional   |
+|----------+--------------+------------|
+| colgroup | optional     | optional   |
+|----------+--------------+------------|
+| dd       | essential    | optional   |
+|----------+--------------+------------|
+| dt       | essential    | optional   |
+|----------+--------------+------------|
+| head     | optional     | optional   |
+|----------+--------------+------------|
+| html     | optional     | optional   |
+|----------+--------------+------------|
+| li       | essential    | optional   |
+|----------+--------------+------------|
+| optgroup | essential    | optional   |
+|----------+--------------+------------|
+| option   | essential    | optional   |
+|----------+--------------+------------|
+| p        | essential    | optional   |
+|----------+--------------+------------|
+| rp       | essential    | optional   |
+|----------+--------------+------------|
+| rt       | essential    | optional   |
+|----------+--------------+------------|
+| tbody    | optional     | optional   |
+|----------+--------------+------------|
+| td       | essential    | optional   |
+|----------+--------------+------------|
+| tfoot    | essential    | optional   |
+|----------+--------------+------------|
+| th       | essential    | optional   |
+|----------+--------------+------------|
+| thead    | essential    | optional   |
+|----------+--------------+------------|
+| tr       | essential    | optional   |
+|----------+--------------+------------|
+***** html元素属性
+      除了全局属性外，html元素还有一个新属性：manifest，用在创建离线应用的一个新API中。当使用时，应用的基本功能
+      组件可以被缓存在浏览器，这样，如果用户离线并刷新页面，功能仍然可用。
+***** 根据HTML5标准检查文档合法性
+      访问[[http://html5.validator.nu]] 或 [[http://validator.w3.org]]
+      两者都提供了页面，可以根据给出的网站URL、上传HTML文件或直接输入HTML来进行校验。
+**** 文档元数据（document metadata）和脚本元素(scripting elements)
+**** 文档区块元素（document sectioning elements）
+**** 内容分组元素（content grouping elements）
+**** 文本级语义元素（text-level semantics elements）
+**** 表格数据元素（tabular data elements）
+**** 表单元素（form elements）
+**** 内嵌内容元素（embedded content elements）
+**** 交互元素（interactive elements）
