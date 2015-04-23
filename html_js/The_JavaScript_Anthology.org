@@ -209,10 +209,11 @@
     node.previousSibling
     #+END_SRC
 ** 创建元素节点和文本节点
-   创建新元素：
+   createElements就是创建新元素的函数，需要提供一个参数--指明想创建元素的类型，返回值则指向新创建的元素：
    #+BEGIN_SRC javascript
    var newAnchor = document.createElement("a");
    #+END_SRC
+   变量newAnchor是一个新元素，可以被插入页面中。
 
    元素内部的文本实际上是这个元素的一个子文本节点，需要单独创建。文本节点有自己的创建函数createTextNode:
    #+BEGIN_SRC javascript
@@ -248,8 +249,86 @@
    执行后的DOM状态应该是这样：
    #+BEGIN_SRC html
    <p id="starLinks">
-     <a href="sirius.htm">Sirius</a><a>monoceros</a>
+     <a href="sirius.html">Sirius</a><a>monoceros</a>
    </p>
+   #+END_SRC
+
+   如果想把节点放到某节点的前面，应该使用insertBefore函数，如果想替换某节点，则应当使用replaceChild函数。
+   insertBefore需要两个参数，一个是待插入的节点，一个是现有的节点，目的是将待插入节点放在这个现有节点的前面。
+   如下的HMTL代码：
+   #+BEGIN_SRC html
+   <p id="starLinks">
+     <a id="sirius" href="sirius.html">Sirius</a>
+   </p>
+   #+END_SRC
+   通过待插入节点的的父节点调用insertBefore：
+   #+BEGIN_SRC javascript
+   var anchorText = document.createTextNode("monoceros");
+
+   var newAnchor = document.createElement("a");
+   newAnchor.appendChild(anchorText);
+
+   var existingAnchor = document.getElementById("sirius");
+   var parent = existingAnchor.parentNode;
+   var newChild = parent.insertBefore(newAnchor, existingAnchor);
+   #+END_SRC
+   执行后的DOM状态：
+   #+BEGIN_SRC html
+   <p id="starLinks">
+     <a href="">monoceros</a>
+     <a id="sirius" href="sirius.html">Sirius</a>
+   </p>
+   #+END_SRC
+
+   如果用replaceChild将现有链完全替换：
+   #+BEGIN_SRC javascript
+   var anchorText = document.createTextNode("monoceros");
+
+   var newAnchor = document.createElement("a");
+   newAnchor.appendChild(anchorText);
+
+   var existingAnchor = document.getElementById("sirius");
+   var parent = existingAnchor.parentNode;
+   var newChild = parent.replaceChild(newAnchor, existingAnchor);
+   #+END_SRC
+   DOM:
+   #+BEGIN_SRC html
+   <p id="starLinks">
+     <a href="">monoceros</a>
+   </p>
+   #+END_SRC
+** 改变元素的类型
+   假设把下面的段改成div：
+   #+BEGIN_SRC html
+   <p id="starLinks">
+     <a href="">Sirius</a>
+     <a href="">Achanar</a>
+     <a href="">Hadar</a>
+   </p>
+   #+END_SRC
+   首先需要创建一个div元素，然后把所有的子节点放到该元素中，将老元素用心元素替换：
+   #+BEGIN_SRC javascript
+   var div = document.createElement("div");
+   var paragraph = document.getElementById("starLinks");
+
+   for (var i = 0; i < paragraph.childNodes.length; i++) {
+     var clone = paragraph.childNodes[i].cloneNode(true);
+     div.appendChild(clone);
+   }
+
+   paragraph.parentNode.replaceChild(div, pragraph);
+   #+END_SRC
+   克隆节点的方法在某些情况下非常有用，不过这里有个更清爽的方法，可以直接把段元素中的子节点移入新的div元素中。
+   DOM节点在任何时候只能属于一个父节点，所以把子节点放入div元素中，也就意味着该节点从段元素中删除。
+   #+BEGIN_SRC javascript
+   var div = document.createElement("div");
+   var paragraph = document.getElementById("starLinks");
+
+   while (paragraphNode.childNodes.length > 0) {
+     div.appendChild(pragraphNode.firstNode);
+   }
+
+   paragraph.parentNode.reaplaceChild(div, paragraph);
    #+END_SRC
 * Tricks
 **  添加任意数量的load事件处理：
