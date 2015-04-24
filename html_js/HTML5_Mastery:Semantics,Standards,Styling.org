@@ -1225,3 +1225,173 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
      div本身e没有任何语义，所以用来分组关联内容、不相关内容、整个页面或者句子，都是合适的。从语义的角度来说，
      都是相同的，div并没有增加这些分组的语义。所以，用来匹配CSS规则或者用JavaScript获取内容，还是有用的。
      div用于文档流内容，而span用于语句内容。
+** 表单
+** 多媒体
+*** img
+    img元素一般需要两个属性：src和alt。
+    src -- 指定实际图片文件的地址，可以是绝对地址或者相对地址。
+    alt -- 用来在图片不可用时提供说明。
+*** 图像映射（image map）
+    用设置的“热点”来根据用户在图片上不同的的点击位置链接到不同的页面。
+    有两种图像映射：服务器端和客户端的。在服务器端的图像映射里，点击的像素坐标发给服务器。服务器根据
+    这个信息来确定用户点击位置，作出相应处理。只要在包含于锚点元素里的img元素上添加一个布尔属性ismap：
+    #+BEGIN_SRC html
+    <a href="process.php"><img alt="" src="map.png" ismap /></a>
+    #+END_SRC
+    客户端图像映射和服务器规则一样，但是热点是在服务端定义的。它需要更多的代码。有两个不同的部分：
+    img以及相关联的map，两者没有嵌套。map元素是一个容器元素，有一个name属性，可以被图片元素的usemap
+    属性引用，来建立两者的联系。实际的图像热点坐标定义在map元素里，可以包含任意数量的自关闭area元素。
+    #+BEGIN_SRC html
+    <img alt="" src="banner.png" width="300" height="272" usemap="#bannermap"/>
+    <map name="bannermap">
+      <area alt="About" coords="52,76,39" href="/about.html" shape="circle"/>
+      <area alt="Contact" coords="120,56,187,102" href="/contact.html" shape="rect"/>
+      <area alt="Portfolio" coords="265,148,221,99,221,42,266,24" href="portfolio.html" shape="poly"/>
+      <area alt="Homepage" href="/index.html" shape="default"/>
+    </map>
+    #+END_SRC
+*** 嵌入其它媒体
+**** embed元素
+     HTML5里的embed有4个属性：width,height,src,type。
+     width和height属性指定了内嵌的媒体在页面上占据的空间，以像素为单位，而src指定了媒体源文件的地址。
+     可以添加更多的属性来和插件通信。虽然标准里仍然还有它，但最好避免embed的使用，因为它的限制性和怪异。
+     更好的选择是object元素。
+**** object元素
+     object不仅仅用作插件媒体，因为它也支持图片和内嵌网页。要作为*表单*提交的一部分，数据随表单提交。
+***** 属性
+      data属性就像img和embed元素的src属性，指定了资源的位置。
+      type属性，给内嵌的资源一个合法的MIMIE类型。
+      data和type必须有一个存在，但不必同时存在。如果两者同时存在，必须增加一个布尔属性typemustmatch，
+      它增加了加载资源时的安全层。
+**** 嵌入的HTML：iframe
+     HTML5里的frame和frameset元素都被遗弃了，不应该再使用。HTML5保留的是iframe元素，即行内框架（inline frame）
+     这个元素允许整个HTML页面（或者HTML代码片段）内嵌在另一个页面里。这种嵌套页面的功能对于在页面上加上第三方HTML
+     代码很有用。例如第三方广告，其它的用途还有Facebook的"Like"按钮和Twitter的"tweet"按钮。
+***** 处理iframe元素里的内容
+      iframe元素创建一个设置长和宽的盒子，外部文档在这里载入。他根据src属性来加载内容。就像object，可以在开始和结束
+      标签之间增加内容，作为浏览器不支持行内框架是的后备显示内容。
+      #+BEGIN_SRC html
+      <iframe frameborder="0" src="embed.html" width="300" height="150">
+        <a href="embed.html">View embeded web page.</a>
+      </iframe>
+      #+END_SRC
+      因为iframe在一个固定的区域显示内容，所以iframe也可以用于在限定的范围显示大量内容（一般是文字）。比如说条款和
+      限制。
+***** 新的iframe元素属性
+      frameborder,marginheight,marginwidth,scrolling,longdesc都已被废弃。
+      HTML5增加了少量以沙箱方式嵌入HTML代码的属性，意思是可以用于防止第三方恶意脚本。这里的初衷是用iframe来安全地
+      在网页上加入第三方资源，比如博客和论坛的评论系统。这三个属性是srcdoc、seamless、sandbox。
+
+      srcdoc属性允许HTML片段直接输入在属性值里，不想src那样需要给出URL指向另一个HTML文件。
+      #+BEGIN_SRC html
+      <iframe srcdoc="<p>This text is in an inline frame</>"><p>This is regular text</p></iframee>
+      #+END_SRC
+      如果存在srcdoc和src属性，srcdoc会被优先使用。
+
+      seamless属性是一个布尔属性，使包含的内容成文容器文档的一部分。
+
+      sandbox，可以作为布尔属性对待，但并不需要。当作为布尔属性时，它会增加很多iframe资源内容的安全限制：
+      * 限制本地的调用
+      * 禁止表单提交
+      * 禁用JavaScript
+      * 禁用链接外部目标
+      * 禁用插件
+      |----------------------|
+      | sanbox property      |
+      |----------------------|
+      | allow-same-origin    |
+      |----------------------|
+      | allow-scripts        |
+      |----------------------|
+      | allow-forms          |
+      |----------------------|
+      | allow-top-navigation |
+      |----------------------|
+*** 视频(video)
+    它与object播放视频不同，因为object只是把视频交给插件来处理。
+    说明：video元素在主流浏览器里的支持非常不错，但如果你需要支持更老的浏览器考虑如下方案：
+    http://html5media.info
+**** 格式
+     视频采用的压缩方法叫做编解码器（codec）。视频和音频一起叫做容器格式（container format），这才是真正的视频文件。
+     互联网上主要有三种容器格式：WebM、Ogg、MPEG-4。容器格式包含一个视频压缩的编解码器和一个音频压缩的编解码器，还有
+     视频的元数据。
+     |-------------------+-------------+-------------+----+-----------+------------------+----------+----------|
+     | Containder Format | Video Codec | Audio Codec | IE | Firefox 5 | Google Chrome 13 | Safari 5 | Opera 11 |
+     |-------------------+-------------+-------------+----+-----------+------------------+----------+----------|
+     | WebM              | VP8         | Vorbis      |    | *         | *                |          | *        |
+     |-------------------+-------------+-------------+----+-----------+------------------+----------+----------|
+     | OGG               | Theora      | Vorbis      |    | *         | *                |          | *        |
+     |-------------------+-------------+-------------+----+-----------+------------------+----------+----------|
+     | MPEG-4            | H.264       | AAC         | *  |           | *                | *        |          |
+     |-------------------+-------------+-------------+----+-----------+------------------+----------+----------|
+**** 版权问题
+     MPEG-4、H.264和ACC编解码器包含技术专利。意味着这些格式的使用将面临MPEGLA协会的使用费。
+**** 处理视频资源
+     就像img一样：
+     #+BEGIN_SRC html
+     <video src="trailer.webm" width="320" height="240"></video>
+     #+END_SRC
+     然而，这没有为i不支持WebM格式或者不支持video元素的浏览器提供后备的内容。要为一个视频提供多个源文件，
+     source元素，用来提供其它内容。source有三个属性：src、type、media。用src来指定视频文件的位置，
+     type用来提供一个视频的MIME类型，以提示浏览器处理的视频类型。
+     #+BEGIN_SRC html
+     <video src="" width="320" height="240">
+       <!--这里的单引号在双引号的周围不能相反，因为MIMI类型的编解码器需要内容用双引号-->
+       <source src="trailer.webm" type='video/webm; codec="vp8, vorbis"'/>
+     </video>
+     #+END_SRC
+     |-------------------------------------+--------------------------------------------|
+     | Video Format                        | MIME Type                                  |
+     |-------------------------------------+--------------------------------------------|
+     | WebM                                | video/webm; codecs="vp8, vorbis"           |
+     |-------------------------------------+--------------------------------------------|
+     | Ogg                                 | video/ogg; codecs="theora, vorbis"         |
+     |-------------------------------------+--------------------------------------------|
+     | MPEG-4 (baseline) - mobile delivery | video/mp4; codecs="avc1.42E01E, mp4a.40.2" |
+     |-------------------------------------+--------------------------------------------|
+     | MPEG-4 (main) - standard-definition | video/mp4; codesc="avc1.4D401E, mp4a.40.2" |
+     | video broadcast                     |                                            |
+     |-------------------------------------+--------------------------------------------|
+     | MPEG-4 (hight) - high-definition    | video/mp4; codecs="avc1.64001E, mp4a.40.2" |
+     | video broadcase                     |                                            |
+     |-------------------------------------+--------------------------------------------|
+     WHATWG发布的一篇有用的type属性需要的MIME类型摘要,http://wiki.whatwg.org/wiki/Video_type_parameters
+
+     media指定了视频优化针对的设备或者媒体。
+**** 视频属性
+***** 增加视频控件
+      时需要为video添加布尔controls属性。
+***** 自动播放和循环视频
+      布尔属性loop。
+***** 预加载视频数据
+      preload：可以是none、metadata、auto。如果设置为空，相当于auto。
+***** 添加海报图片
+      poster属性，图片可以任选
+***** 视频静音
+      布尔属性muted
+***** 设置跨域策略
+      crossorigin属性定义在一份叫做跨域资源共享（Cross-Origin Resource Sharing，CORS）的标准里，它定义了视频怎样
+      在不同的网站域之间共享。它的值是anonymous或use-credentials。
+      更多信息：[[http://www.w3.org/TR/cors][W3C]]
+***** 媒体组
+      mediagroup属性的目的是支持视频分组，以便同时控制。
+***
+*** 音频
+    这个元素其实只是没有活动画面的video元素。控件看起来就是浏览器原生创建的。它有以下属性：
+    src、preload、autoplay、loop、muted、controls、crossorigin、mediagroup。
+**** 音频格式
+     大部分与视频部分的内容相似。Ogg格式使用Vorbis编解码器（WebM也是用它），文件后缀为.oga。MPEG-4容器里使用
+     Advanced Audio Coding（ACC）作为音频编解码器，因为他是在MPEG-4容器里的，所以通常使用.m4a作为文件后缀，以区分
+     .mp4。ACC编码的音频可以免费在互联网上播放（在内容获得授权的情况下），但是并不是完全没有专利。开发编解码ACC工具
+     需要授权（[[http://www.vialicensing.com/licensing/aac-fees.apsx][授权费用]]）。
+     WAV是无压缩音频格式，文件比Ogg Vorbis和ACC更大。MP3也可以使用，但是它的版权要求比ACC更加严格，所以最好避免。
+*** 编码
+    * HandBrake: 开元的MP4文件生成器。http://handbrake.fr
+    * Firefogg: Ogg编码的Firefox扩展。http://firefogg.org
+    * FFmpeg: 很强大的工具套件。 http://ffmpeg.org
+    * Miro video converter: 拖拽转换器，只有Mac版本。http://www.mirovideoconverter.com/
+    * VLC: 灵活的媒体播放器，可以处理所有的网络视频和音频格式。它带有一个转换格式的导出向导。 http://videllan.org/vlc
+    * Adobe Media Encode。
+** CSS3
+** 用户交互、HTML5 API
+*** 图像
