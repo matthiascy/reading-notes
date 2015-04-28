@@ -1372,6 +1372,188 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
       color类型会创建一个color picker（color well）。颜色值以URL编码后的十六进制数值提交。例如，黑色会以%23000000
       发送，"%23"是"#"的URL编码，也就是说代表"#000000"。
 ***** 日期和时间输入类型
+      相关控件date, time, datetime, datetime-local, month, week创建了不同的获取时间的方法。
+***** 数字输入：number和range
+      可以用min和max来限定数字范围。step用来设置增量。
+***** 搜索输入类型、email、电话号码、网站URL
+*** 校验和提交表单
+**** 输入字段必填
+     要求特定的字段必填是更简单的校验形式。这就是required的用途。布尔类型。
+     #+BEGIN_SRC html
+     <p>
+       <input name="example" type="text" required/>
+     </p>
+     #+END_SRC
+     如果没有输入任何值,会弹出错误信息。
+**** 用按钮和图片提交表单
+     提交按钮用于将整个表单的数据提交到表单action属性指定的文件（如果没有action属性，就提交到本页面）。
+     button元素比input元素灵活的多：
+     #+BEGIN_SRC html
+     <p>
+       <input name="" type="submit" value=""/>
+     </p>
+     #+END_SRC
+     #+BEGIN_SRC html
+     <p>
+       <button type="submit">
+         <img alt="" src="star.png"/>
+         <strong><em>Submit!</em></strong>
+       </button>
+     </p>
+     #+END_SRC
+     因为button元素不是自关闭元素，所以允许在标签之间使用HTML，以提供更好的样式。
+     如果type属性设置为reset，就会创建一个复位按钮（reset button）。复位按钮会将所有的表单控件重置为初始值。
+     但现在不再流行。
+     用button元素提交和input元素的一点不同的是：如果要用一张图片作为提交按钮，这时可以将input的type属性设置为
+     image，然后再增加一个src属性。虽然在按钮里可以使用图片，但是使用image类型的input控件使整个图片成为按钮，
+     而没有浏览器增加的其它界面元素。即的加上alt属性，描述图片的用途。
+     用图片作为提交按钮还会一起发送x和y坐标（点击在图片上的坐标）。这样可以和服务器端图片地图
+     （server-side image map）结合使用。如果图片由那么属性，也会随坐标发送。
+**** 其它表单控件
+***** 菜单
+      select元素是一个容器元素，包含任意数量的option和optgroup元素。它一般显示为一个下拉列表。
+      select的每行包含在一个option元素里：
+      #+BEGIN_SRC html
+      <select id="" name="cheesemenu">
+        <option>Cheddar</option>
+        <option>Stilton</option>
+        <option>Brie</option>
+      </select>
+      #+END_SRC
+      option元素有四个特定的属性：disabled,selected,value,label
+****** 增加不同的值
+       value属性用来区分某个option的内容和提交的值。如果value属性被忽略了，那么内容就会被当作值。
+       #+BEGIN_SRC html
+       <select id="" name="cheesemenu">
+         <option value="ch01">Cheddar</option>
+         <option value="ch02">Stilton</option>
+         <option>Brie</option>
+       </select>
+       #+END_SRC
+       如果第一个或者第二个opiton被选中，那么分别会提交ch01和ch02。如果第三个被选中了，那么它的内
+       容"Brie"会被提交。
+****** 添加缩略标签
+       label属性设计用来设置并显示一个简短的值，而不是option的内容。label属性可以用来提供另一种显示的标签，
+       而仍然保持传送到服务器的值。
+       #+BEGIN_SRC html
+       <select id="" name="cheesemenu">
+         <option>Cheddar</option>
+         <option>Stilton</option>
+         <option>Brie</option>
+         <option label="All">All of the cheeses in all of the worlds</option>
+       </select>
+       #+END_SRC
+****** 添加菜单结构
+       要为菜单添加结构，可以用optgroup元素来分组类似的option元素。
+       #+BEGIN_SRC html
+       <select id="" name="cheesemenu">
+         <option>- - - English cheeses - - -</option>
+         <option value="cheddar">Cheddar</option>
+         <option value="stilton">Stilton</option>
+         <option>- - - French cheeses - - -</option>
+         <option value="brie">Brie</option>
+       </select>
+       #+END_SRC
+       可以使用：
+       #+BEGIN_SRC html
+       <select id="" name="cheesemenu">
+         <optgroup label="EnglishCheeses">
+           <option value="cheddar">Cheddar</option>
+           <option value="stilton">Stilton</option>
+         </optgroup>
+         <optgroup label="French cheeses">
+           <option value="brie">Brie</option>
+         </optgroup>
+       </select>
+       #+END_SRC
+****** 文本块
+       textarea元素在一些方面与文本输入相似，但是它允许多行而不是一行文字。
+       它用一对属性cols和rows来控制尺寸。并且不用value属性来预设内容，它用元素自己的内容。它是一个容器元素，而不是
+       自关闭的空元素。
+       如下创建textarea：
+       #+BEGIN_SRC html
+       <textarea cols="20" id="" name="" rows="5">Type your content here</textarea>
+       #+END_SRC
+       虽然textarea是内容的容器，但最好用新的placeholder属性，并且将元素内容置空：
+       #+BEGIN_SRC html
+       <textarea cols="20" id="" name="" rows="5" placeholder="Type your content here"></textarea>
+       #+END_SRC
+       textarea元素包括一个没有在其他地方提及的属性：wrap。这个属性用于表示在提交的数据里是否需要加上换行符。
+       这个属性可以是hard或者soft。
+       * hard -- 提交的数据里会有换行符
+       * soft -- 提交的数据里不会有换行符
+       textarea也可以使用maxlength属性来限定可输入的字符数量。（如果数量长度重要的话，要在服务器端二次检查）。
+****** 显示进度
+       progress有两个属性：max和value。max属性是最多步骤数，value是当前的步骤。
+****** 显示度量
+       meter元素可能看起来像progress元素，但是有重要的图解上的区别（schematic difference）。progress用于
+       显示步骤的进度；而meter元素用来显示度量的，也就是，某个已知范围里的特定值。它可以用来显示影片的剩余容量
+       或者剩余库存。
+****** 显示计算的输出
+       output元素用于显示计算的结果。除了全局属性及form和name属性外，output元素还有一个属性：for。这个属性应该包
+       含用于计算的元素的ID列表：
+       #+BEGIN_SRC html
+       <input id="inputa" type="number"> +
+       <input id="inputb" type="number"> =
+       <input id="resultfld" name="result" for="inputa inputb"></output>
+       #+END_SRC
+       通常的用途是显示脚本的计算结果：
+       #+BEGIN_SRC javascript
+       var inputa;
+       var inputb;
+       var resultfld;
+       function init() {
+         inputa = document.getElementById("inputa");
+         inputb = document.getElementById("inputb");
+         resultfld = document.getElementById("resultfld");
+         inputa.oninput = updateResult;
+         inputb.oninput = updateResult;
+       }
+       function updateResult() {
+         resultfld.value = Number(inputa.value)+Number(inputb.value);
+       }
+       window.onload = init;
+       #+END_SRC
+***** 用fieldset和label添加结构
+****** fieldset
+       fieldset元素使Web作者能够将表单控件分隔成与主题相关的部分。
+       #+BEGIN_SRC html
+       <fieldset>
+         <p>
+         <select id="" name="cheesemenu">
+           <option></option>
+           <option></option>
+           <option></option>
+         </select>
+         </p>
+         <p>
+           <button type="submit">Submit!</button>
+         </p>
+       </fieldset>
+       #+END_SRC
+       要辨识fieldset，必须使用legend元素：
+       #+BEGIN_SRC html
+       <fieldset>
+         <legend>Cheeses of the world</legend>
+         <p>
+           <select id="" name="cheesemenu">
+             <option>Cheddar</option>
+             <option>Stilton</option>
+             <option>Brie</option>
+           </select>
+         </p>
+         <p>
+           <button type="submit">Submit!</button>
+         </p>
+       </fieldset>
+       #+END_SRC
+****** label
+       label同样提升可用性和访问性。这个元素用于建立文字标签和表单控件的关联。当标签和控件相关联时，就都可以被点击
+       和控件交互。
+       有两种方法来创建可点击的标签，第一个，也是推荐的一种方法是，用labelo包括表单控件：
+       #+BEGIN_SRC html
+       <lable>Favrotite cheese: <input name="ch" type="text" value=""/></lable>
+       #+END_SRC
 ** 多媒体
 *** img
     img元素一般需要两个属性：src和alt。
