@@ -1336,13 +1336,42 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
       文件输入控件包括一个accept属性，理论上可以用来限制上传文件类型。它接受逗号分隔的MIME类型，比如这样：
       accpet="image/gif,image/jpeg,image/jpg"
 ***** 复选框（checkbox）
-      一个复选框通常是一个方形的盒子，可以打钩或去掉，但是用JavaScript可以设置第三种“中间状态”（indeternimate）。
+      一个复选框通常是一个方形的盒子，可以打钩或去掉，但是用JavaScript可以设置第三种“中间状态”（indeternimate）
       #+BEGIN_SRC javascript
       function init() {
         document.getElementById("option3").indeterminate = true;
       }
       window.onload = init;
       #+END_SRC
+      要把复选框设置为勾选状态，可以使用checked属性。
+      #+BEGIN_SRC html
+      <input id="option" name="option" type="checkbox" checked />
+      #+END_SRC
+***** 单选按钮（radio）
+      #+BEGIN_SRC html
+      <input name="example" type="radio" value="first"/>
+      #+END_SRC
+***** 添加隐藏输入域（hidden）
+      用于在表单中增加对用户不可见，但需要提交额外数据。
+      #+BEGIN_SRC html
+      <input name="hiddenValue" type="hidden" value="42"/>
+      #+END_SRC
+      当包含这个输入字段的表单提交时，"hiddenValue=42" 会出现在URL里（如果用GET方法的话），并且会随着表单的其它数据
+      一起发送到服务器。
+
+      说明：隐藏域有时候用来告知服务器可接受的上传文件的最大容量。例如：
+      #+BEGIN_SRC html
+      <input name="MAX_FILE_SIZE" type="hidden" value="20000"/>
+      #+END_SRC
+***** button, submit, reset, image
+      button输入类型和button元素有很多重叠的特性。在两者之间，button元素是更好的选择。两者都会创建一个带有文字标签的可
+      点击的按钮，区别是，button元素可以用html元素作为标签，而button输入类型只能用纯文字。submit和reset类型也会创建
+      按钮，除此之外，还可以提交表单，以及将表单的值重置为默认值。image用于在提交按钮位置处放置图片。
+**** 新输入类型
+***** 调色板（color）
+      color类型会创建一个color picker（color well）。颜色值以URL编码后的十六进制数值提交。例如，黑色会以%23000000
+      发送，"%23"是"#"的URL编码，也就是说代表"#000000"。
+***** 日期和时间输入类型
 ** 多媒体
 *** img
     img元素一般需要两个属性：src和alt。
