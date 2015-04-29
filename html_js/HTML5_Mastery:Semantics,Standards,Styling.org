@@ -1719,5 +1719,149 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
     * VLC: 灵活的媒体播放器，可以处理所有的网络视频和音频格式。它带有一个转换格式的导出向导。 http://videllan.org/vlc
     * Adobe Media Encode。
 ** CSS3
+*** CSS3模块
+    CSS3不是一份巨大的包含整个标准的文档，而是分解为在不同成熟的很多模块。[[http://www.w3.org/Style/CSS/current-work][这里能找到完整的模块列表]]。
+*** 使用CSS
+**** 样式表
+     要在HTML里使用CSS，需要在页面上加上样式表以使CSS样式可以获取相关联的HTML。有多种方法可以做到这一点，但是你
+     应该使用link元素。
+     #+BEGIN_SRC html
+     <!doctype html>
+     <html lang="en">
+     <head>
+       <meta charset="UTF-8"/>
+       <title>HTML5 and CSS togather</title>
+       <link href="css/main.css" rel="stylesheet" type="text/css"/>
+     </head>
+     <body>
+       <p>CSS rules</p>
+     </body>
+     </html>
+     #+END_SRC
+     用到样式表时，title属性对于link元素特别重要。这个属性用来区分不同的样式种类。样式表的种类确定了一个特定的样
+     式表在页面上的优先级。有三种类型：
+
+     * 持久样式（peristent）：永远应用到文档
+     * 自选样式表（preferred）：应用到文档，除非有替代样式表。
+     * 替代样式表（alternative）：作为自选样式表或持久样式表的替代。
+
+     持久样式表、自选样式表和替代样式表实现上的主要差别是：持续样式表没有title属性，而自选样式表和替代样式表有。
+     所有持久样式表都会应用到HTML文档，不管有多少。这是样式表的最常见用法。上面的代码里的样式表是persistent的。
+     如果多个自选样式表和替代样式表链接到了一个HTML文档，只有一个会被选择并使用。代替样式表跟自选样式表的工作方式
+     相似，只是在指定的页面上可以替代自选样式表。替代样式表可能会因为优先级或可访问性的原因被使用。
+     下面是使用了持久样式表、自选样式表和两个替代样式表的一个页面：
+     #+BEGIN_SRC html
+     ...
+     <head>
+       <meta charset="utf-8"/>
+
+       <title>HTML5 and CSS together</title>
+       <link href="css/main.css" rel="stylesheet" type="text/css"/>
+       <link href="css/colors-generic.css" rel="alternate stylesheet" type="text/css" title="Generic color styles"/>
+       <link href="css/colors-deuteranopia.css" rel="alternate stylesheet" type="text/css" title="Deuteranopia adjusted color sytles"/>
+       <link href="css/colors-protanopia.css" rel="alternate stylesheet" type="text/css" title="Protanopia adjusted color styles"/>
+     </head>
+     ...
+     #+END_SRC
+     在这个示例页面里，main.css是持久样式表，被用来设置页面的所有样式，包括所有场景。colors-generic.css是自选样
+     式表，为页面增加了色彩相关的样式。如何切换样式表依赖于使用的用户代理，但有些浏览器提供菜单选项来选择替代样式。
+     还可以通过meta元素设置自选样式表。可以使用http-equiv="Default-Style"指令来设置自选样式表（通过设置content
+     属性为样式表的title）。
+     #+BEGIN_SRC html
+     ...
+     <head>
+       <meta charset="utf-8"/>
+       <meta http-equiv="Default-Style" content="Blue Theme"/>
+       <title>HTML5 and CSS together</title>
+
+       <link rel="stylesheet" href="css/red.css" type="text/css" title="Red Theme"/>
+       <link rel="alternate stylesheet" href="css/green.css" type="text/css" titel="Green Theme"/>
+       <link rel="alternate sytlesheet" href="css/blue.css" type="text/css" title="Blue Theme">
+     </head>
+     ...
+     #+END_SRC
+**** CSS 样式规则（style rule）
+     样式规则以一个选择器（selector）开始，选择器后紧跟{},它包含了一条样式规则的所有样式信息。在这之间是一组CSS属性和
+     值，它们一起被称为声明（declaration）。
+***** CSS选择器语法
+****** 简单选择器
+      * 类选择器（type selector）
+      * ID选择器（ID selector）
+      * Class选择器（class selector）
+      #+CAPTION:常用简单选择器
+      |----------+---------------+------------------------------------|
+      | selector | CSS example   | match HTML                         |
+      |----------+---------------+------------------------------------|
+      | *        | *{ }          | <p></p>                            |
+      |----------+---------------+------------------------------------|
+      | E        | article { }   | <article></article>                |
+      |----------+---------------+------------------------------------|
+      | #V       | #logo { }     | <h1 id="logo"></h1>                |
+      |----------+---------------+------------------------------------|
+      | .V       | .critical { } | <strong class="critical"></strong> |
+      |----------+---------------+------------------------------------|
+****** 合并选择器（compound selector）
+       如果一组选择器有相同的CSS声明，那么这些样式规则可以使用逗号分隔连接，叫做选择器列表（selector list）
+       #+BEGIN_SRC css
+       h1, h2, h3, h4, h5, h6 { color: red; }
+       #+END_SRC
+       选择器仍然是分离的实体,可以把选择器组合为聚合的选择器（compound selector），它可以用来匹配页面结构里的特定内容。
+       考虑html片段：
+       #+BEGIN_SRC html
+       <span class="alert critical">dangerous</span>
+       #+END_SRC
+       这样有两个class，所以可以使用三种不同的选择器：
+       #+BEGIN_SRC css
+       span.alert { }
+       span.critical { }
+       span.alert.critical { }
+       #+END_SRC
+       前两个选择器仅仅选出了一个或者另一个class，它们会引用任何含有两个class中的一个的span元素。第三个将两个class值
+       连起来创建了混合选择器，它只会引用同时包含两个class的span元素。
+       如果忽略类型选择器，就等价于用*选择器。
+       #+BEGIN_SRC css
+       .critical { color: red; }    /* match all elements for class 'critical' */
+       *.critical { color: red; }   /* match all elements for class 'critical' */
+       p.critical { color: red; }   /* match paragraph elements for class 'critical' */
+       #+END_SRC
+****** 组合器（combinator）和复杂选择器（complex selector）
+       组合器定义了怎样用选择器通过描述不同HTML元素的关系来引用它们的方法。
+       #+CAPTION: 组合器列表
+       |----------+---------------+-------------------------------------------+-----------------------------------|
+       | selector | CSS example   | match html                                | description                       |
+       |----------+---------------+-------------------------------------------+-----------------------------------|
+       | E F      | div p { }     | <div> <div><p>selected</p></div><div      | F embed in E                      |
+       |----------+---------------+-------------------------------------------+-----------------------------------|
+       | E>F      | div > p { }   | <div><p>selected</p></div>                | F is E's child                    |
+       |----------+---------------+-------------------------------------------+-----------------------------------|
+       | E+F      | strong+em { } | <strong></strong><em>selected</em>        | siblings, E and F must adjacent   |
+       |----------+---------------+-------------------------------------------+-----------------------------------|
+       | E~F      | strong~em { } | <strong></strong><p></p><em>selected</em> | siblings, E and F do not adajcent |
+       |----------+---------------+-------------------------------------------+-----------------------------------|
+       复杂选择器用组合器组合了一个或者多个混合选择器。
+****** 高级选择器
+       * 属性选择器（attribute selector）：元素可以通过它们的属性、属性值或部分来获取。
+       * 伪类（pseudoclass）：元素可以通过它们的结构的模式、用户交互的响应、语言或其他可能没有直接设置在元素上的属性来获取
+       * 伪元素（pseudoelement）：没有明确在代码里定义的部分元素可以获取，比如元素里的第一行或第一个字母。
+******* 属性选择器
+        #+CAPTION:CSS属性选择器
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | selector | CSS example           | match html                                         | description                                            |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | [A]      | img[alt] { }          | <img src="" alt="Dog"/>                            | has A                                                  |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | [A="V"]  | img[alt="Car"] { }    | <img src="" alt="Car"/>                            | has A and it's value is V                              |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | [A~="V"] | p[accesskey~="q"] { } | <p accesskey="s q"></p>                            | has A and it's value contains V, seperated by space    |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | [A^="V"] | a[type^="text"] { }   | <a href="link.html" type="text/html">Link</a>      | has A and it's value start with V                      |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | [A$="V"] | a[type$="css"] { }    | <a href="link.css" type="text/css">Link Styles</a> | has A and it's value end with V                        |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | [A*="V"] | img[alt*="man"] { }   | <img src="" alt="Germany"/>                        | has A and it's value contains V                        |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+        | E[A|="V"]| p[lang|="en" { }      | <p lang="en-GB-oed"></p>                           | has A and it's value start with V, seperated by hyphen |
+        |----------+-----------------------+----------------------------------------------------+--------------------------------------------------------+
+******* 链接和片段标识样式
 ** 用户交互、HTML5 API
 *** 图像
