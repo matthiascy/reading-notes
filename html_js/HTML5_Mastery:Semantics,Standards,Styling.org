@@ -1979,5 +1979,129 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
         | :empty               | p:empty { }             | <p></p>                                                       | do not have child        |
         |----------------------+-------------------------+---------------------------------------------------------------+--------------------------|
 ******* 伪元素选择器
+        #+CAPTION: 伪元素选择器
+        |----------------+---------------------+----------------------------------|
+        | selector       | CSS example         | html                             |
+        |----------------+---------------------+----------------------------------|
+        | ::first-line   | p::first-line { }   | <p>selected<br/>not selected</p> |
+        |----------------+---------------------+----------------------------------|
+        | ::first-letter | p::first-letter { } | <p>Selected</p>                  |
+        |----------------+---------------------+----------------------------------|
+        | ::before       | p::before { }       | <p>After the content</p>         |
+        |----------------+---------------------+----------------------------------|
+        | ::after        | p::after { }        | <p>Before the content</p>        |
+        |----------------+---------------------+----------------------------------|
+******* 多种选择器
+        |----------+-------------------+--------------------|
+        | selector | CSS example       | html               |
+        |----------+-------------------+--------------------|
+        | :lang(L) | p:lang(fr) { }    | <p lang="fr"></p>  |
+        |----------+-------------------+--------------------|
+        | :not(S)  | p:not(#important) | <p id="other"></p> |
+        |----------+-------------------+--------------------|
+        :lang(L)选择器用于选取被搜索的内容（通过lang属性或其它页面元信息设置）。选择器括号中间的是语言代码。
+        :not(S)用于选择所有不匹配某个选择器的元素。
+
+****** CSS盒模型
+       对于CSS，构成页面的HTML元素包含在矩形盒子里，他们决定了跟页面上其他元素的相对位置。盒模型有三种主要类型：
+       * 块级（block-level）
+       * 行级（line-level）
+       * 行内级（inline-level）
+       你会将需要应用CSS的内容用HTML元素封装起来，然后你会用一个选择器来设置样式。
+       行级盒子不是很容易接触到（虽然有::first-line选择器）。
+
+       块级元素最常见的是用于封装文档流的内容，比如段落、标题或其他用于分隔内容的元素。默认的，块级盒子会充满容器
+       元素的宽度，并且纵向叠加。
+
+       行内元素常见的是用于封装语句的内容，比如span、q、em等。默认的，行内盒子横向延伸，而不是纵向。因为他跟随内
+       容里的文字行。行内元素的盒子看起来完全和块级盒子一样，除了顶部和底部的margin会被忽略，只有左右的margin有
+       效。另外，顶部和底部的padding不会推动上下的元素，而是会与元素的边框（如果有的话）和相邻元素重叠。行内盒子
+       只占据内容需要的空间，加上设置的padding，也就是说会忽略它们的高度和宽度属性。
+******* 设置盒子类型
+        在一个元素上设置：
+        #+BEGIN_SRC css
+        display: block;
+        #+END_SRC
+        会将它作为块级盒子处理，而
+        #+BEGIN_SRC css
+        display: inline;
+        #+END_SRC
+        则作为行内盒子。盒子类型的转换对于锚点元素特别有用，它默认是行内元素，所以忽略了高度和宽度属性。
+******* 设置盒子位置
+        要调节元素的位置，使用position属性。它有以下值（还有inherit，即使用父元素的设置）。
+        * static： 盒子在默认位置。定位属性（left，top，right，bottom）被忽略。
+        * relative： 盒子从默认的位置偏移定位属性指定的像素，即left，top，right，bottom。
+        * absolute： 盒子以定位属性指定的像素数偏移，但这是相对第一个position属性为非static值的父元素，或者相对
+                     于浏览器可视区域的左上角。以先遇到为准。
+        * fixed：跟绝对定位相似，但是盒子是不会随着其它内容滚动，在可视区域固定。
+
+****** 背景和边框
+       background-color属性设置背景色。这个颜色绘制在背景图片的后面，所以，如果图片包含透明的区域，
+       那么就能够透过它看到背景色。如果设置为transparent，那就不会穿透。
+
+       background-image属性用来在元素的背景上添加图片。
+
+       background-repeat属性定义了背景图的重复方式。基本设置是：
+       repeat、no-repeat、repeat-x、repeat-y。
+       CSS3里的这个属性新增了两个值：space和round。一般当图片重复时，它会重复图片的一部分知道充满可
+       用空间（即使有一些图片会剪切到可视区域外部）。space和round属性可以防止这种剪切的发生。space
+       会用图片把可用控件充满，不剪切图片，并在重复图片之间增加空间，使它均匀地充满。round基本一样，
+       但不是用空白填补，而是拉伸图片。
+
+       background-attachment属性决定了页面滚动时背景图片是否跟随滚动。fixed值会固定背景，即使是页面
+       滚动，而scroll也可以让它随内容滚动。还有一个新值local。这只针对有自己的滚动条的元素。
+
+       background-position属性用于背景图片的偏移位置。它接受两个值作为水平和垂直定位。
+
+       background-clip和background-origin属性是CSS3引入的。两者接受相同的值，但是功能不同。
+       background-clip指定了“背景绘制区域“。 background-origin指定了”背景定位区域”。
+
+       background-size属性可以用来在背景区域拉伸图片，而不是重复它。
+
+****** 多重背景
+       CSS3增加了背景这值多个图片的功能，它们会在背景区域内重叠。
+       #+BEGIN_SRC css
+       background-image: url(logl.png), url(star.png);
+       #+END_SRC
+
+****** 圆角
+       #+BEGIN_SRC css
+       border-radius: 20px; /* round all corners by 20 pixels*/
+       border-radius: 100px 50px 25px 0px; /* each corner is rounded by a diffferent amount */
+       border-radius: 100px / 20px; /* round one side of the corner more than the other side */
+       #+END_SRC
+       斜杠将值分成两部分，第一个值是水平变圆量（horizontal rounding amount），第二个值是垂直变圆量（vertical rounding amount）。
+
+****** 阴影
+       box-shadow属性可以用来创建盒子周围的阴影。它接受的值是阴影的水平距离、垂直距离、模糊量、扩展量，最后是阴影的颜色。
+       #+BEGIN_SRC css
+       box-shadow: 10px 15px 5px #999999;
+       #+END_SRC
+
+****** 字体
+       Google在 http://www.google.com/webfonts 托管了一个网络字体库，可以在你的网站链接使用。
+       @font-face指令放在CSS文件的顶部，并指定font family和字体源文件：
+       #+BEGIN_SRC css
+       @font-face {
+         font-family: myFont;
+         src: url("LunotrobeOutline.woff") format("woff");
+       }
+       #+END_SRC
+       然后可以在font-family属性中设置@font-face规则里设置的值：
+       #+BEGIN_SRC css
+       body { font-family: myFont; }
+       #+END_SRC
+       注意：Typekit(http://typekit.com)可以用来中转本来受限制的字体。
+
+****** 多列
+       在一个文本块里创建多列向来都要使用很多的div来布局。为了缓解这个问题，增加了一个新的属性columns。
+       它最基本的作用是设置一个数字，指定列的个数：
+       #+BEGIN_SRC css
+       p.col { columns: 3; }
+       #+END_SRC
+       这会将一个段落（带有class属性col）在可用区域里分成三列。
+       还有一些属性：
+       * column-gap和column-rule来控制列之间的空隙
+       * column-count仅用来设置列数。
 ** 用户交互、HTML5 API
 *** 图像
