@@ -65,9 +65,38 @@
    #+END_SRC
    *Note:* In Python 3.0, all strings will be Unicode strins.
 ** new functions by now
-   |-------------+----------------------------------------|
-   | function    | description                            |
-   |-------------+----------------------------------------|
-   | abs(number) | Returns teh absolute value of a number |
-   |             |                                        |
+   |--------------------------+------------------------------------------------------------|
+   | function                 | description                                                |
+   |--------------------------+------------------------------------------------------------|
+   | abs(number)              | Returns teh absolute value of a number                     |
+   |--------------------------+------------------------------------------------------------|
+   | cmath.sqrt(number)       | Returns the square root; works with negative numbers       |
+   |--------------------------+------------------------------------------------------------|
+   | float(object)            | Converts a string or number to a floating-point number     |
+   |--------------------------+------------------------------------------------------------|
+   | help()                   | Offers interactive help                                    |
+   |--------------------------+------------------------------------------------------------|
+   | input(prompt)            | Gets input from the user                                   |
+   |--------------------------+------------------------------------------------------------|
+   | int(object)              | Converts a string or number to an integer                  |
+   |--------------------------+------------------------------------------------------------|
+   | long(object)             | Converts a string or number to a long integer              |
+   |--------------------------+------------------------------------------------------------|
+   | math.ceil(number)        | Returns the ceiling of a number as a float                 |
+   |--------------------------+------------------------------------------------------------|
+   | math.floor(number)       | Returns the floor of a number as a float                   |
+   |--------------------------+------------------------------------------------------------|
+   | math.sqrt(number)        | Return the square root; doesn't work with negative numbers |
+   |--------------------------+------------------------------------------------------------|
+   | pow(x, y[, z])           | Return s x to the power of y(modulo z)                     |
+   |--------------------------+------------------------------------------------------------|
+   | raw_input(prompt)        | Gets input from the user, as a string                      |
+   |--------------------------+------------------------------------------------------------|
+   | repr(object)             | Retrurns a string representation of a value                |
+   |--------------------------+------------------------------------------------------------|
+   | round(number[, ndigits]) | Rounds a number to a given precision                       |
+   |--------------------------+------------------------------------------------------------|
+   | str(object)              | Converts a value to string                                 |
+   |--------------------------+------------------------------------------------------------|
+
 
