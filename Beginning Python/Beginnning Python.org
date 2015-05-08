@@ -1,0 +1,73 @@
+#+TITLE:Beginning Python: From Novice to Prefessional
+* THE BASICS
+** repr vs. str
+   *str* and *repr* simply converts a value into a string, for example, repr creates a
+   string that is a representation of the value as a legal Python expressoion.
+   #+BEGIN_SRC python
+   >>> print repr("Hello, world!")
+   'Hello, world!'
+   >>> print repr(10000L)
+   10000L
+   >>> print str("Hello, world!")
+   Hello, world!
+   >>> print str(10000L)
+   10000
+   #+END_SRC
+   A synonym for repr(x) is `x`(here, you use backticks, not single quotes).
+   *Note:* Backticks are removed in Python 3.0.
+
+   In short, *str*, *repr* and backticks are three ways of converting a Python value to a
+   string. The function *str* makes it look good, while repr(and the backticks) tries to make
+   the resulting string a legal Python expression.
+
+** input vs. raw_input
+   *input* assumes that what you enter is a valid Python expression(it's more or less the inverse
+   of *repr*). For example, if you write your name as a string, that's no problem.
+   However, it's just a bit too much to as that users write their name in quotes like that. Therefore
+   we use *raw_input*,whick treats all input as raw data and puts it into a string.
+   #+BEGIN_SRC python
+   >>> input("Enter a number: ")
+   Enter a number: 3
+   3
+   >>> raw_input("Enter a number: ")
+   Enter a number: 3
+   '3'
+   #+END_SRC
+   *I just thought the numbers in Python are treated as expressions but strings are not, so the
+   /raw_input/ is much more like input a string directly otherwise would be treated as a variable.*
+   Unless you have a special need for /input/, you should probably use /raw_input/.
+
+** long strings, raw strings, and unicode
+*** long strings
+    If you want to write a really long string, one that spans several lines, you can use triple
+    quotes instead of ordinary quotes.
+
+    *Tip:*
+    Ordinary strings can span several lines only if  the last character on a line is a backslash.
+*** raw strings
+    *Raw strings* is useful when you trying to input a long pathname, like this:
+    #+BEGIN_SRC python
+    path = 'C:\\Programm Files\\fnord\\foo\\bar\\baz\\frozz\\bozz'
+    #+END_SRC
+    which with lots of backslashes. Here is using raw string:
+    #+BEGIN_SRC python
+    path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz'
+    #+END_SRC
+    The last character in a raw string cannot be a backslash unless you escape it(and then the
+    backslash you use to escape it will be part of the string, too). What if you want the last
+    character in raw string to be a backslash?
+    #+BEGIN_SRC python
+    path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz' '\\'
+    #+END_SRC
+*** unicode strings
+   #+BEGIN_SRC python
+   u'hello, world'
+   #+END_SRC
+   *Note:* In Python 3.0, all strings will be Unicode strins.
+** new functions by now
+   |-------------+----------------------------------------|
+   | function    | description                            |
+   |-------------+----------------------------------------|
+   | abs(number) | Returns teh absolute value of a number |
+   |             |                                        |
+
