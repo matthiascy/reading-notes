@@ -2103,5 +2103,20 @@ more: http://www.w3.org/TR/2011/WD-html5-20110525/
        还有一些属性：
        * column-gap和column-rule来控制列之间的空隙
        * column-count仅用来设置列数。
-** 用户交互、HTML5 API
-*** 图像
+* 网络资源
+  * W3C的HTML标准草案： http://w3.org/TR/html5/
+  * WHATWG“当前”的HTML标准： https://www.whatwg.org/specs/web-apps/current-work/
+  * Html5.org：包括HTML5校验器和WHATWG标准的变更记录 http://html5.org
+  * Html5rocks.com：包括完全由HTML5创建的在线代码编辑器和演示文档 http://html5rocks.com
+  * Html5doctor.com：包括关于HTML5的有用文章和详细的元素参考手册 http://html5doctor.com
+  * Caniuse.com： HTML5,CSS3和相关技术的兼容表格 http://caniuse.com
+  * Html5test.com：浏览HTML5和相关功能支持度的评分 http://html5test.com
+  * CSS3 Selectors Test： CSS选择器支持度的浏览器测试 http://www.css3.info/selectors-test/
+  * Mobilehtml5.org：移动设备和平板电脑浏览器的HTML5特性兼容性 http://mobilehtml5.org
+  * HTML5boilerplate.com：HTML5页面的模板 http://html5boilerplate.com
+  * Modernizr：测试浏览器对HTML5、CSS3和相关支持度的javascript库 http://modernizr.com
+  * Google Chrome Frame：在老浏览器里支持现代网页技术的方法 http://code.google.com/chrome/chromeframe/
+  * Html5pattern.com：用于客户端表单校验的正则表达式 http://html5pattern.com
+  * Mozilla Developer Network(MDN)：HTML5和其它前端技术的优秀资源 http://developer.mozilla.org/en/HTML/HTML5/
+  * Html5gallery.com： 一些使用HTML5的网站的展示 http://html5gallery.com
+  * Mediaqueri.es：使用媒体查询（media query）的网站展示 http://mediaqueri.es
