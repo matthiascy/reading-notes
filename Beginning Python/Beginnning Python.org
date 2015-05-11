@@ -1,6 +1,145 @@
 #+TITLE:Beginning Python: From Novice to Prefessional
-* THE BASICS
-** repr vs. str
+* The Basics
+** Numbers and Expressions
+   Real numbers are called /floats/ (or /floating-point numbers) in Python. If
+   either one of the numbers in a division is a float, the result will be, too:
+   #+BEGIN_SRC python
+   >>> 1.0 / 2.0
+   0.5
+
+   >>> 1 / 2.0
+   0.5
+
+   >>> 1.0 / 2
+   0.5
+
+   >>> 1 / 2.
+   0.5
+   #+END_SRC
+   If you would rather have Python do proper division, you could add the follwing
+   statement to the beginning of your program:
+   #+BEGIN_SRC python
+   >>> from __future__ import division
+   #+END_SRC
+
+   Another alternative, if you're running Python from the command line, is to supply
+   the command-line switch -Qnew. In either case, division will suddenly make a bit
+   more sense:
+   #+BEGIN_SRC python
+   >>> 1 / 2
+   0.5
+   #+END_SRC
+   Of course, the single slash can no longer be used for the kind of integer division
+   shown earlier. A separate operator will do this - double slash:
+   #+BEGIN_SRC python
+   >>> 1 // 2
+   0
+   #+END_SRC
+   The double slash conistently perofrms integer division, even with floats:
+   #+BEGIN_SRC python
+   >>> 1.0 // 2.0
+   0.0
+   #+END_SRC
+   The remainder(modulus) operator x % y gives the remainder of x divided by y,
+   and it works just fine with floats as well
+   #+BEGIN_SRC python
+   >>> 2.75 % 0.5
+   0.25
+   #+END_SRC
+   The exponentiation(or power)operator:
+   #+BEGIN_SRC python
+   >>> 2 ** 3
+   8
+   >>> -3 ** 2
+   -9
+   >>> (-3) ** 2
+   9
+   #+END_SRC
+
+** Statements
+   *Note:* In Python 3.0, *print* is a function, which means you need to
+   write print(...) instead of print ...
+
+*** The IF statement
+    #+BEGIN_SRC python
+    >>> if 1 == 2: print 'One equals two'
+    ...
+    >>> if 1 == 1: pirnt 'One equals one'
+    #+END_SRC
+
+** Modules
+   Modules is extensions that can be imported into Python to extend its
+   capabilities. You import modules with a special command called(naturally
+   enough) *import*.
+
+   If you are sure that you won't import more than one function with a given name,
+   you might not want to write the module name each time you call the function.
+   Then you can use a variant of the *import* command:
+   #+BEGIN_SRC python
+   >>> from math import sqrt
+   >>> sqrt(9)
+   3.0
+   #+END_SRC
+
+** cmath and Complex Numbers
+   Complex number is covered by a different module, *cmath* (for complex math):
+   #+BEGIN_SRC python
+   >>> import cmath
+   >>> cmath.sqrt(-1)
+   1j
+   #+END_SRC
+
+** Back to the __future__
+   From it, we can import features that will be standard in Python in the future
+   but that aren’t part of the language yet.
+
+** Making scripts behave like normal programs
+   In UNIX, there is a standard way of doing this: have the first line of your
+   script begin with the character sequence #! (called pound bang or shebang)
+   followed by the absolute path to the program that interprets the script (in
+   our case Python). Even if you didn’t quite understand that, just put the
+   following in the first line of your script if you want it to run easily on UNIX:
+
+   #!/usr/bin/env python
+
+   This should run the script, regardless of where the Python binary is located.
+
+   *Note:* In some operating systems if you install a recent version of Python (e.g., 3.0)
+   you will still have an old one lying around (e.g.,2.7), which is needed by some
+   system programs (so you can’t uninstall it). In such cases, the /usr/bin/env
+   trick is not a good idea, as you will probably end up with your programs being
+   executed by the old Python. Instead, you should find the exact location of your
+   new Python executable (probably called python or python2.7 ) and use the full
+   path in the pound bang line, like this:
+
+   #!/usr/bin/python2
+
+   The exact path may vary from system to system.
+
+   Before you can actually run your script, you must make it executable:
+
+   $ chmod a+x hello.py
+
+   Now it can be run like this (assuming that you have the current directory in your path):
+
+   $ hello.py
+
+   If this doesn’t work, try using ./hello.py instead, which will work even if the current
+   directory (.) is not part of your execution path.
+   If you like, you can rename your file and remove the py suffix to make it look more like a
+   normal program.
+
+** Comments
+   The hash sign (#) is a bit special in Python. When you put it in your code,
+   everything to the right of it is ignored (which is why the Python interpreter
+   didn’t choke on the /usr/bin/env stuff used earlier). Here is an example:
+   #+BEGIN_SRC python
+   # Print the circumference of the circle:
+   print 2 * pi * radius
+   #+END_SRC
+
+** Strings
+*** String Representations, repr and str
    *str* and *repr* simply converts a value into a string, for example, repr creates a
    string that is a representation of the value as a legal Python expressoion.
    #+BEGIN_SRC python
@@ -20,7 +159,7 @@
    string. The function *str* makes it look good, while repr(and the backticks) tries to make
    the resulting string a legal Python expression.
 
-** input vs. raw_input
+*** input vs. raw_input
    *input* assumes that what you enter is a valid Python expression(it's more or less the inverse
    of *repr*). For example, if you write your name as a string, that's no problem.
    However, it's just a bit too much to as that users write their name in quotes like that. Therefore
@@ -35,35 +174,37 @@
    #+END_SRC
    *I just thought the numbers in Python are treated as expressions but strings are not, so the
    /raw_input/ is much more like input a string directly otherwise would be treated as a variable.*
-   Unless you have a special need for /input/, you should probably use /raw_input/.
 
-** long strings, raw strings, and unicode
-*** long strings
-    If you want to write a really long string, one that spans several lines, you can use triple
-    quotes instead of ordinary quotes.
+*** long strings, raw strings, and unicode
+**** long strings
+     If you want to write a really long string, one that spans several lines, you can use triple
+     quotes instead of ordinary quotes.
 
-    *Tip:*
-    Ordinary strings can span several lines only if  the last character on a line is a backslash.
-*** raw strings
-    *Raw strings* is useful when you trying to input a long pathname, like this:
-    #+BEGIN_SRC python
-    path = 'C:\\Programm Files\\fnord\\foo\\bar\\baz\\frozz\\bozz'
-    #+END_SRC
-    which with lots of backslashes. Here is using raw string:
-    #+BEGIN_SRC python
-    path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz'
-    #+END_SRC
-    The last character in a raw string cannot be a backslash unless you escape it(and then the
-    backslash you use to escape it will be part of the string, too). What if you want the last
-    character in raw string to be a backslash?
-    #+BEGIN_SRC python
-    path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz' '\\'
-    #+END_SRC
-*** unicode strings
-   #+BEGIN_SRC python
-   u'hello, world'
-   #+END_SRC
-   *Note:* In Python 3.0, all strings will be Unicode strins.
+     *Tip:*
+     Ordinary strings can span several lines only if  the last character on a line is a backslash.
+
+**** raw strings
+     *Raw strings* is useful when you trying to input a long pathname, like this:
+     #+BEGIN_SRC python
+     path = 'C:\\Programm Files\\fnord\\foo\\bar\\baz\\frozz\\bozz'
+     #+END_SRC
+     which with lots of backslashes. Here is using raw string:
+     #+BEGIN_SRC python
+     path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz'
+     #+END_SRC
+     The last character in a raw string cannot be a backslash unless you escape it(and then the
+     backslash you use to escape it will be part of the string, too). What if you want the last
+     character in raw string to be a backslash?
+     #+BEGIN_SRC python
+     path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz' '\\'
+     #+END_SRC
+
+**** unicode strings
+     #+BEGIN_SRC python
+     u'hello, world'
+     #+END_SRC
+     *Note:* In Python 3.0, all strings will be Unicode strins.
+
 ** new functions by now
    |--------------------------+------------------------------------------------------------|
    | function                 | description                                                |
@@ -99,4 +240,486 @@
    | str(object)              | Converts a value to string                                 |
    |--------------------------+------------------------------------------------------------|
 
+* Lists and Tuples
+   The most basic data structure in Python is the *sequence*. Each element of a
+   sequence is assigned a number-its position, or /index/. The first index is
+   zero, the second index is one, and so forth.
 
+   *Note:* The last item of sequence is numbered -1, the next-to-last -2, and so
+   forth. That means you can count forward /or/ backward from the first element,
+   which lies at the beginning, or 0.
+
+** sequence overview
+   Python has siz built-in types of sequences. They are *lists*, *tuples*,
+   *strings*, *Unicode strings*, *buffer objects* and *xrange objects*.
+
+   The main difference between lists and tuples is that you can change a list,
+   but you can't change a tuple.
+   #+BEGIN_SRC python
+   >>> edward = ['Edward Gumby', 42]
+   #+END_SRC
+   Swquences can contain other sequences, too.
+   #+BEGIN_SRC python
+   >>> edward = ['Edward Gumby', 42]
+   >>> john = ['Jhon Smith', 50]
+   >>> database = [edward, john]
+   >>> database
+   [['Edward Gumby', 42], ['John Smith', 50]]
+   #+END_SRC
+
+*** common sequence operations
+    These operations include /indexin/, /slicig/, /adding/, /multiplying/,
+    /iteration/ and checking for /membership/. In addtion, Python has built-in
+    functions for finding the length of a sequence, and for finding its largest
+    and smallest elements.
+
+    To iterate over a sequence means to perform certain actions repeatedly, once
+    per element in the sequence.
+
+**** indexing
+     All elements in a sequence are numbered—from zero and upwards. You can access
+     them individually with a number, just like an array.
+
+     *Note:* A string is just a sequence of characters.
+
+     If a function call returns a sequence, you can index it directly. For instance,
+     if you are simply interested in the fourth digit in a year entered by the user,
+     you could do something like this:
+     #+BEGIN_SRC python
+     >>> fourth = raw_input('Year: ')[3]
+     Year: 2005
+     >>> fourth
+     '5'
+     #+END_SRC
+     [[file:examples/indexing.py][Example]]
+
+**** slicing
+     You can use /slicing/ to access ranges of elements. Do this by using /two/ indices,
+     separated by a colon:
+     #+BEGIN_SRC python
+     >>> tag = '<a href="http://www.python.org">Python web site</a>'
+     >>> tag[9:30]
+     'http://www.python.org'
+     >>> tag[32:-4]
+     'Python web site'
+     #+END_SRC
+     The /first/ index is the number of the first element you want to include. However,
+     the /last/ index is the number of the first element /after/ your slice.
+     In short, you supply two indices as limits for your slice, where the first is
+     *inclusive* and the second is *exclusive*.
+     #+BEGIN_SRC python
+     >>> numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+     >>> numbers[3:6]
+     [4, 5, 6]
+     >>> numbers[-3:]
+     [8, 9, 10]
+     >>> numbers[:3]
+     [1, 2, 3]
+     >>> numbers[:]
+     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+     #+END_SRC
+     [[file:examples/slicing.py][Example]]
+
+***** longer steps
+      When slicing, you specify (either explicitly or implicitly) the start and end points
+      of the slice. Another parameter which normally is left implicit, is the step length.
+      In a regular slice, the step length is one, which means that the slice “moves” from
+      one element to the next, returning all the elements between the start and end:
+      #+BEGIN_SRC python
+      >>> numbers[0:10:1]
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      >>> numbers[0:10:2]
+      [1, 3, 5, 7, 9]
+      #+END_SRC
+      Still can use the shortcuts mentioned earlier.
+      #+BEGIN_SRC python
+      >>> numbers[::4]
+      [1, 5, 9]
+      #+END_SRC
+      Naturally, the step size can't be zero, but it can be negative, which means extracting
+      the elements form right to left:
+      #+BEGIN_SRC python
+      >>> numbers[8:3:-1]
+      [9, 8, 7, 6, 5]
+      #+END_SRC
+
+**** adding sequences
+     Sequences can be concatenated with the addition(plus) operator:
+     #+BEGIN_SRC python
+     >>> 'Hello, ' + 'world!'
+     'Hello, world!'
+     #+END_SRC
+     But, you can’t concatenate a list and a string, although both are sequences. In general,
+     you cannot concatenate sequences of different types.
+
+**** multiplication
+     Multiplying a sequence by a number x creates a new sequence where the original sequence is
+     repeated x times:
+     #+BEGIN_SRC python
+     >>> 'python' * 5
+     'pythonpythonpythonpythonpython'
+     >>> [42] * 10
+     [42, 42, 42, 42, 42, 42, 42, 42, 42, 42]
+     #+END_SRC
+
+***** none, empty lists, and initialization
+      An empty list is simply written as two brackets ([]) - there's nothing in it. None is a
+      Python value and means exactly that—"nothing here". So if you want to initialize a list
+      of length 10, you could do the following:
+      #+BEGIN_SRC python
+      >>> sequence = [None] * 10
+      >>> sequence
+      [None, None, None, None, None, None, None, None, None, None]
+      #+END_SRC
+      [[file:examples/sequence_multiplication.py][Example]]
+
+**** membership
+     To check whether a value can be found in a sequence, you use the *in* operator.
+     It checks whether something is true and returns a value accordingly: True for
+     true and False for false.
+     #+BEGIN_SRC python
+     >>> permissions = 'rw'
+     >>> 'w' in permissions
+     True
+     >>> 'x' in permissionsCHAPTER 2 ■ LISTS AND TUPLES
+     False
+     >>> users = ['mlh', 'foo', 'bar']
+     >>> raw_input('Enter your user name: ') in users
+     Enter your user name: mlh
+     True
+     >>> subject = '$$$ Get rich now!!! $$$'
+     >>> '$$$' in subject
+     True
+     #+END_SRC
+     [[file:examples/sequence_membership.py][Example]]
+
+**** length, minimum, and maximum
+     #+BEGIN_SRC python
+     >>> numbers = [100, 34, 678]
+     >>> len(numbers)
+     3
+     >>> max(numbers)
+     678
+     >>> min(numbers)
+     34
+     >>> max(2, 3)
+     3
+     >>> min(9, 3, 2, 5)
+     2
+     #+END_SRC
+
+*** lists
+    list are /mutable/ - that is, you can change their contents - and they have
+    many useful specialized methods.
+
+**** function
+     #+BEGIN_SRC python
+     >>> list('Hello')
+     ['H', 'e', 'l', 'l', 'o']
+     #+END_SRC
+     *list* works with all kinds of sequences, not just strings.
+
+     *Tip:* To convert a list of characters such as the preceding code back to
+     string, you would use the following expression:
+     #+BEGIN_SRC python
+     ''.join(somelist)
+     #+END_SRC
+     where some list is you list.
+
+**** basic operations
+     You can perform all the standard sequence operations on lists.
+
+***** changing lists: item assignments
+      #+BEGIN_SRC python
+      >>> x = [1, 1, 1]
+      >>> x[1] = 2
+      >>> x
+      [1, 2, 1]
+      #+END_SRC
+      *Note:* You cannot assign to a postion that doesn't exist.
+
+***** deleting elements
+      You can simply use the *del* statement:
+      #+BEGIN_SRC python
+      >>> names = ['Alice', 'Beth', 'Cecil', 'Dee-Dee', 'Earl']
+      >>> del names[2]
+      >>> names
+      ['Alice', 'Beth', 'Dee-Dee', 'Earl']
+      #+END_SRC
+
+***** assigning to slices
+      #+BEGIN_SRC python
+      >>> name = list('Perl')
+      >>> name
+      ['P', 'e', 'r', 'l']
+      >>> name[2:] = list('ar')
+      >>> name
+      ['P', 'e', 'a', 'r']
+      #+END_SRC
+      You can assign to several positions at once.
+      #+BEGIN_SRC python
+      >>> name = list('Perl')
+      >>> name[1:] = list('ython')
+      >>> name
+      ['P', 'y', 't', 'h', 'o', 'n']
+      #+END_SRC
+      Slice assignments can even be used to insert elements without replacing any of the
+      original ones:
+      #+BEGIN_SRC python
+      >>> numbers = [1, 5]
+      >>> numbers[1:1] = [2, 3, 4]
+      >>> numbers
+      [1, 2, 3, 4, 5]
+      #+END_SRC
+
+***** list methods
+      A method is a function that is tightly coupled to some object, be it a list, a number,
+      a string, or whatever. In general, a method is called like this:
+
+      object.method(arguments)
+
+      A method call looks just like a function call, except that the object is put before the
+      method name, with a dot separating them.
+
+****** append
+       The *append* method is used to append an object to the end of a list:
+       #+BEGIN_SRC python
+       >>> lst = [1, 2, 3]
+       >>> lst.append(4)
+       >>> lst
+       [1, 2, 3, 4]
+       #+END_SRC
+
+****** count
+       The *count* method counts the occurrences of an element in a list:
+       #+BEGIN_SRC python
+       >>> ['to', 'be', 'or', 'not', 'to', 'be'].count('to)
+       2
+       >>> x = [[1, 2], 1, 1, [2, 1, [1, 2]]]
+       >>> x.count(1)
+       2
+       #+END_SRC
+
+****** extend
+       The *extend* method allows you to append several values at once by supplying
+       a sequence of the values you want to append. In other words, your original
+       list has been extended by the other one:
+
+       #+BEGIN_SRC python
+       >>> a = [1, 2, 3]
+       >>> b = [4, 5, 6]
+       >>> a.extend(b)
+       >>> a
+       [1, 2, 3, 4, 5, 6]
+       #+END_SRC
+
+       This may seem similar to concatenation, but the important difference is that the
+       extended sequence(in this case, a) is modified. This is not the case in ordinary
+       concatenation, in which a completely new sequence is returned;
+
+       #+BEGIN_SRC python
+       >>> a = [1, 2, 3]
+       >>> b = [4, 5, 6]
+       >>> a + b
+       [1, 2, 3, 4, 5, 6]
+       >>> a
+       [1, 2, 3]
+       #+END_SRC
+
+****** index
+       The *index* method is used for searching lists to find the index of the first
+       occurrence of a value:
+       #+BEGIN_SRC python
+       >>> knights = ['We', 'are', 'the', 'knights', 'who', 'say', 'ni']
+       >>> knights.index('who')
+       4
+       #+END_SRC
+
+****** insert
+       The *insert* method is used to insert an object into a list:
+
+       #+BEGIN_SRC python
+       >>> numbers = [1, 2, 3, 5, 6, 7]
+       >>> numbers.insert(3, 'four')
+       >>> numbers
+       [1, 2, 3, 'four', 5, 6, 7]
+       #+END_SRC
+
+****** pop
+       The *pop* method removes an element(by default, the last one) from the list
+       and returns it:
+
+       #+BEGIN_SRC python
+       >>> x = [1, 2, 3]
+       >>> x.pop()
+       3
+       >>> x
+       [1, 2]
+       >>> x.pop(0)
+       1
+       >>> x
+       [2]
+       #+END_SRC
+
+****** remove
+       The *remove* method is used to remove the first occurence of a value:
+       #+BEGIN_SRC python
+       >>> x = ['to', 'be', 'or', 'not', 'to', 'be']
+       >>> x.remove('be')
+       >>> x
+       ['to', 'or', 'not', 'to', 'be']
+       #+END_SRC
+
+****** reverse
+       The *reverse* method reverses the elements in the list.
+       #+BEGIN_SRC python
+       >>> x = [1, 2, 3]
+       >>> x.reverse()
+       >>> x
+       [3, 2, 1]
+       #+END_SRC
+
+       *Tip:* If you want to iterate over a sequence in reverse, you can use the
+       reversed function. This function doesn’t return a list, though; it returns
+       an iterator. You can convert the returned object with list :
+       #+BEGIN_SRC python
+       >>> x = [1, 2, 3]
+       >>> list(reversed(x))
+       [3, 2, 1]
+       #+END_SRC
+
+****** sort
+       The *sort* method is used to sort lists in place. Sorting "in place" means
+       changing the original list so its elements are in sorted order, rather than
+       simply returning a sorted copy of the list:
+
+       #+BEGIN_SRC python
+       >>> x = [4, 6, 2, 1, 7, 9]
+       >>> x.sort()
+       >>> x
+       [1, 2, 4, 6, 7, 9]
+       #+END_SRC
+
+       You’ve encountered several methods already that modify the list without returning any-
+       thing, and in most cases that behavior is quite natural (as with append, for example).
+       But I want to emphasize this behavior in the case of sort because so many people seem
+       to be confused by it. The confusion usually occurs when users want a sorted copy of a
+       list while leaving the original alone. An intuitive (but wrong) way of doing this is
+       as follows:
+
+       #+BEGIN_SRC python
+       >>> x = [4, 6, 2, 1, 7, 9]
+       >>> y = x.sort() # Don't do this!
+       >>> print y
+       None
+       #+END_SRC
+
+       Because sort modifies x but returns nothing, you end up with a sorted x and a y
+       containing None. One correct way of doing this would be to first bind y to a copy
+       of x, and then sort y, as follows:
+
+       #+BEGIN_SRC python
+       >>> x = [4, 6, 2, 1, 7, 9]
+       >>> y = x[:]
+       >>> y.sort()
+       >>> x
+       [4, 6, 2, 1, 7, 9]
+       >>> y
+       [1, 2, 4, 6, 7, 9]
+       #+END_SRC
+
+       Recall that x[:] is a slice containing all the elements of x, effectively a copy of
+       the entire list. Simply assigning x to y wouldn’t work because both x and y would
+       refer to the same list:
+
+       #+BEGIN_SRC python
+       >>> y = x
+       >>> y.sort()
+       >>> x
+       [1, 2, 4, 6, 7, 9]
+       >>> y
+       [1, 2, 4, 6, 7, 9]
+       #+END_SRC
+
+       Another way of getting a sorted copy of a list is using the *sorted* function:
+
+       #+BEGIN_SRC python
+       >>> x = [4, 6, 2, 1, 7, 9]
+       >>> y = sorted(x)
+       >>> x
+       [4, 6, 2, 1, 7, 9]
+       >>> y
+       [1, 2, 4, 6, 7, 9]
+       #+END_SRC
+
+*** tuples: immutables sequences
+    Tuples are sequences, just like lists. The only difference is that tuples can’t be
+    changed. (As you may have noticed, this is also true of strings.) The tuple syntax
+    is simple—if you separate some values with commas, you automatically have a tuple:
+
+    #+BEGIN_SRC python
+    >>> 1, 2, 3
+    (1, 2, 3)
+    #+END_SRC
+
+    tuples may also be (and often are) enclosed in parentheses:
+    #+BEGIN_SRC python
+    >>> (1, 2, 3)
+    (1, 2, 3)
+    #+END_SRC
+
+    This is a bit peculiar-you have to include a comma, even though there is
+    only one value:
+    #+BEGIN_SRC python
+    >>> 42
+    42
+    >>> 42,
+    (42,)
+    >>> (42,)
+    (42,)
+    #+END_SRC
+
+    The last two examples produce tuples of length one, while the first is not a
+    tuple at all. The comma is crucial. Simply adding parentheses won’t help: (42)
+    is exactly the same as 42. One lonely comma, however, can change the value of
+    an expression completely:
+    #+BEGIN_SRC python
+    >>> 3*(40+2)
+    126
+    >>> 3*(40+2,)
+    (42, 42, 42)
+    #+END_SRC
+
+**** function
+     The tuple function works in pretty much the same way as list: it takes one sequence argument
+     and converts it to a tuple. If the argument is already a tuple, it is returned unchanged:
+
+     #+BEGIN_SRC python
+     >>> tuple([1, 2, 3])
+     (1, 2, 3)
+     >>> tuple('abc')
+     ('a', 'b', 'c')
+     >>> tuple((1, 2, 3))
+     (1, 2, 3)
+     #+END_SRC
+
+** new functions
+   |---------------+-------------------------------------------------------|
+   | function      | description                                           |
+   |---------------+-------------------------------------------------------|
+   | cmp(x, y)     | Compares two values                                   |
+   |---------------+-------------------------------------------------------|
+   | len(seq)      | Returns the length of a sequence                      |
+   |---------------+-------------------------------------------------------|
+   | list(seq)     | Converts a sequence to a list                         |
+   |---------------+-------------------------------------------------------|
+   | max(args)     | Returns the maximum of a sequence or set of arguments |
+   |---------------+-------------------------------------------------------|
+   | min(args)     | Returns the minimum of a sequence or set of arguments |
+   |---------------+-------------------------------------------------------|
+   | reversed(seq) | Lets you iterate over a sequence in reverse           |
+   |---------------+-------------------------------------------------------|
+   | sorted(seq)   | Returns a sorted list of the elements of seq          |
+   |---------------+-------------------------------------------------------|
+   | tuple(seq)    | Converts a sequence to a tuple                        |
+   |---------------+-------------------------------------------------------|
