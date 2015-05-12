@@ -723,3 +723,80 @@
    |---------------+-------------------------------------------------------|
    | tuple(seq)    | Converts a sequence to a tuple                        |
    |---------------+-------------------------------------------------------|
+
+* Strings
+** basic operations
+   All the standard sequence operations(indexing, slicing, multiplication,
+   membership, length, minimum, and maximum) work with strings. Strings are
+   immutable, so all kinds of item or slice assignments are illegal:
+   #+BEGIN_SRC python
+   >>> website = 'http://www.python.org'
+   >>> website[-3:] = 'com'
+   Traceback (most recent call last):
+     File "<pyshell#19>", line 1, in ?
+       website[-3:] = 'com'
+   TypeError: object doesn't support slice assignment
+   #+END_SRC
+
+** string formatting: the short version
+   String formatting uses the (aptly named) string formatting operator, the
+   percent (%) sign. To the left of the %, you place a string (the format string);
+   to the right of it, you place the value you want to format.
+   #+BEGIN_SRC python
+   >>> format = "Hello, %s. %s enough for ya?"
+   >>> values = ('world', 'Hot')
+   >>> print format % values
+   Hello, world. Hot enough for ya?
+   #+END_SRC
+
+   *Note:* If you use a list or some other sequence instead of a tuple, the sequence
+   will be interpreted as single value. Only tuples and dictionaries will allow you
+   to format more than one value.
+
+   The %s parts of the format string are called /conversion specifiers/. They mark the
+   places where the values are to be inserted.
+
+*** template strings
+    The string module offers another way of formatting values: template strings. They
+    work more like variable substitution in many UNIX shells, with $foo being replaced
+    by a keyword argument called foo, which is passed to the template method substitute:
+
+    #+BEGIN_SRC python
+    >>> from string import Template
+    >>> s = Template('$x, glorious $x!')
+    >>> s.substitute(x='slurm')
+    'slurm, glorious slurm!'
+    #+END_SRC
+
+    If the replacement field is part of a word, the name must be enclosed in braces, in
+    order to clearly indicate where it ends:
+
+    #+BEGIN_SRC python
+    >>> s = Template("It's ${x}tastic!")
+    >>> s.substitute(x='slurm')
+    "It's slurmtastic!"
+    #+END_SRC
+
+    In order to insert a dollar sign, use $$:
+
+    #+BEGIN_SRC python
+    >>> s = Template("Make $$ selling $x!")
+    >>> s.substitute(x='slurm')
+    'Make $ selling slurm!'
+    #+END_SRC
+
+    Instead of using keyword arguments, you can supply the value-name pairs in a dictionary:
+
+    #+BEGIN_SRC python
+    >>> s = Template('A $thing must never $action.')
+    >>> d = {}
+    >>> d['thing'] = 'gentleman'
+    >>> d['action'] = 'show his socks'
+    >>> s.substitute(d)
+    'A gentleman must never show his socks.'
+    #+END_SRC
+
+    There is also a method called safe_substitute that will not complain about
+    missing values or incorrect uses of the $ character.
+
+** string formatting: the long version
