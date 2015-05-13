@@ -800,3 +800,255 @@
     missing values or incorrect uses of the $ character.
 
 ** string formatting: the long version
+*** conversion specifier
+    A basic conversion specifier consists of the items that follow. Note that the order
+    of these items is crucial.
+
+    * *The % character:* This marks the beginning of the conversion specifier.
+    * *Conversion flags:* These are optional and may be -, indicating left alignment;
+      +, indicating that a sign should precede the converted value; " "(a space character),
+      indicating that space should precede positive numbers; or 0, indicating that the
+      conversion should be zero-padded.
+    * *The minimum field width:* This is also optional and specifies that the converted
+      string will be at least this wide. If this is an * (asterisk), the width will be
+      read from the value tuple.
+    * *A . (dot) followed by the precision:* This is also optional. If a real number is
+      converted, this many decimals should be shown. If a string is converted, this number
+      is the /maximum field width/. If this is an * (asterisk), the precision will be read
+      from the value tuple.
+    * *The conversion type:* This can be any of the types listed follow.
+
+    |-----------------+------------------------------------------------------------------------------|
+    | conversion type | meaning                                                                      |
+    |-----------------+------------------------------------------------------------------------------|
+    | d, i            | signed integer decimal                                                       |
+    |-----------------+------------------------------------------------------------------------------|
+    | o               | unsigned octal                                                               |
+    |-----------------+------------------------------------------------------------------------------|
+    | u               | unsigned decimal                                                             |
+    |-----------------+------------------------------------------------------------------------------|
+    | x               | unsigned hexadecimal(lowercase)                                              |
+    |-----------------+------------------------------------------------------------------------------|
+    | X               | unsigned hexadecimal(uppercase)                                              |
+    |-----------------+------------------------------------------------------------------------------|
+    | e               | floating-point exponential format(lowercase)                                 |
+    |-----------------+------------------------------------------------------------------------------|
+    | E               | floating-point exponential format(uppercase)                                 |
+    |-----------------+------------------------------------------------------------------------------|
+    | f, F            | floating-point decimal format                                                |
+    |-----------------+------------------------------------------------------------------------------|
+    | g               | same as e if exponent is greater than -4 or less than precision; f otherwise |
+    |-----------------+------------------------------------------------------------------------------|
+    | G               | same as E if exponent is greater than -4 or less than precision; F otherwise |
+    |-----------------+------------------------------------------------------------------------------|
+    | c               | single character(accepts an integer or a single character string)            |
+    |-----------------+------------------------------------------------------------------------------|
+    | r               | string(converts any Python object using repr)                                |
+    |-----------------+------------------------------------------------------------------------------|
+    | s               | string(converts any Python object using str)                                 |
+    |-----------------+------------------------------------------------------------------------------|
+
+*** signs, alignment, and zero-padding
+    Before the width and precision numbers, you may put a "flag", which may be either
+    zero, plus, minus, or blank. A zero means that the number will be zero-padded:
+
+    #+BEGIN_SRC python
+    >>> ‘%010.2' % pi
+    '00000003.14'
+    #+END_SRC
+
+    A minus sign(-) left-aligns the value:
+
+    #+BEGIN_SRC python
+    >>> '%-10.2f' % pi
+    '3.14       '
+    #+END_SRC
+
+    A blank(" ") means that a blank should be put in front of positive numbers. This
+    is useful for aligning positive and negative numbers:
+
+    #+BEGIN_SRC python
+    >>> print (' %5d' % 10)
+       10
+    >>> print ('% 5d' % -10)
+      -10
+    #+END_SRC
+
+    A plus(+) means that a sign(either plus or minus) should precede both positive
+    and negative numbers (again, useful for aligning):
+
+    #+BEGIN_SRC python
+    >>> print ('%+5d' % 10) + ('%+5d' % 10)
+      +10
+      -10
+    #+END_SRC
+
+    In the following example, use the asterisk width specifier to format a table of fruit
+    prices, where the user enters the total width of the table. [[file:./examples/string_fromatting.py][Example]]
+
+*** string methods
+**** find
+     The *find* method finds a substring within a larger string. Ite returns
+     the leftmost index where the substring is found. If it is /not/ found,
+     -1 is returned:
+
+     #+BEGIN_SRC python
+     >>> 'With a moo-moo here, and a moo-moo there'.find('moo')
+     7
+     >>> title = "Monty Python's Flying Circus"
+     >>> title.find('Monty')
+     0
+     >>> title.find('Zirquss')
+     -1
+     #+END_SRC
+
+     You may also supply a starting point for search and, optionally, an ending point:
+
+     #+BEGIN_SRC python
+     >>> subject = '$$$ Get rich now!!! $$$'
+     >>> subject.find('$$$')
+     0
+     >>> subject.find('$$$', 1) #only supplying the start
+     20
+     >>> subject.find('!!!')
+     16
+     >>> subject.find('!!!', 0, 16) # supplying start and end
+     -1
+     #+END_SRC
+
+**** join
+     The *join* method is the inverse of *split*. It is use to join the elements of a
+     sequence:
+
+     #+BEGIN_SRC python
+     >>> seq = [1, 2, 3, 4, 5]
+     >>> sep = '+'
+     >>> sep.join(seq) # trying to join a list of numbers
+     Traceback (most recent call last):
+       File "<stdin>", line 1, in ?
+     TypeError: sequence item 0: expected string, int found
+     >>> seq = ['1', '2', '3', '4', '5']
+     >>> sep.join(seq) # joining a list of strings
+     '1+2+3+4+5'
+     >>> dirs = '', 'usr', 'bin', 'env'
+     >>> '/'.join(dirs)
+     '/usr/bin/env'
+     >>> print 'C:' + '\\'.join(dirs)
+     'C:\usr\bin\env'
+     #+END_SRC
+
+     *join into is much proper*
+
+**** lower
+     The *lower* method returns a lowercase version of the string:
+
+     #+BEGIN_SRC python
+     >>> 'Traditional STYLE'.lower()
+     'traditional style'
+     #+END_SRC
+
+***** title casing
+      One relative of *lower* is the *title* method, which title cases a string - that
+      is, all words start with uppercase characters, and all other characters are
+      lowercased.
+
+      #+BEGIN_SRC python
+      >>> "this's all folks".title()
+      "That'S All, Folks"
+      #+END_SRC
+
+      An alternative is the *capwords* function from the *string* module:
+
+      #+BEGIN_SRC python
+      >>> import string
+      >>> string.capwords("that's all, folks")
+      "That's All, Folks"
+      #+END_SRC
+
+**** replace
+     The *replace* method returns a string where all the occurrences of one
+     string have been replaced by another:
+
+     #+BEGIN_SRC python
+     >>> 'This is a test'.replace('is', 'eez')
+     'Theez eez a test'
+     #+END_SRC
+
+**** split
+     A very important string method, *split* is the inverse of *join*, and is used
+     to *split* a string into a sequence:
+
+     #+BEGIN_SRC python
+     >>> '1+2+3+4+5'.split('+')
+     ['1', '2', '3', '4', '5']
+     >>> 'usr/bin/env'.split('/')
+     ['', 'usr', 'bin', 'env']
+     >>> 'Using the default'.split()
+     ['Using', 'the', 'default']
+     #+END_SRC
+
+     If no separator is supplied, the default is to split on all runs of consecutive
+     whitespace characters(spaces, tabs, newlines, and so on).
+
+     *split by is much proper*
+
+**** strip
+     The *strip* method returns a string where whitespace on the left and right (but
+     not internally) has been stripped (removed):
+
+     #+BEGIN_SRC python
+     >>> '        internal whitespace is kept        '.strip()
+     'internal whitespace is kept'
+     #+END_SRC
+
+**** translate
+     Similar to *replace*, *translate* replaces parts of a string, but unlike *replace*,
+     *translate* works only with single characters. Its strength lies in that it can
+     perform several replacements simultaneously, and can do so more efficiently than
+     *replace*.
+
+     Before you can use *translate*, you must make a /translation table/. This translation
+     talbe is full listing of which characters should be replaced by which and, you won't
+     write it out yourself. Instead, you'll use the function *maketrans* form the *string*
+     module.
+
+     The *maketrans* function takes two arguments: two strings of equal length, indicating
+     that each character in the first string should be replaced by the character in the
+     same postion in the second string.
+
+     #+BEGIN_SRC python
+     >>> from string import maketrans
+     >>> table = maketrans('cs', 'kz')
+     #+END_SRC
+
+     A translation table is a string containing one replacement letter for each of the
+     256 characters in the ASCII character set:
+
+     #+BEGIN_SRC python
+     >>> table = maketrans('cs', 'kz')
+     >>> len(table)
+     256
+     >>> table[97:123]
+     'abkdefghijklmnopqrztuvwxyz'
+     >>> maketrans('', '')[97:123]
+     'abcdefghijilmnopqrstuvwxyz'
+     #+END_SRC
+
+     The empty translation has a normal alphabet, while in the preceding code, the letter c
+     has been replaced by k, and s has been replaced by z.
+
+     #+BEGIN_SRC python
+     >>> 'this is an incredible test'.translate(table)
+     'thiz iz an inkredible tezt'
+     #+END_SRC
+
+*** new function
+    |----------------------------+-------------------------------------------------------------------------------------|
+    | function                   | description                                                                         |
+    |----------------------------+-------------------------------------------------------------------------------------|
+    | string.capwords(s[, sep])  | splits *s* with *split* (using sep), capitalize items, and join with a single space |
+    |----------------------------+-------------------------------------------------------------------------------------|
+    | string.maketrans(from, to) | makes a translation table for *tanslate*                                            |
+    |----------------------------+-------------------------------------------------------------------------------------|
+
+** Dictionaries
