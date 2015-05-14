@@ -1051,4 +1051,857 @@
     | string.maketrans(from, to) | makes a translation table for *tanslate*                                            |
     |----------------------------+-------------------------------------------------------------------------------------|
 
-** Dictionaries
+* Dictionaries
+** creating and using dictionaries
+   Dictionaries consist of pairs (called /items/) of /keys/ and their corresponding
+   /values./ Each key is separated form its value by a colon(:), the items are seperated
+   by commas, and the whole thing is enclosed in curly braces. An empty dictionary
+   (without any items) is written just two curly bracws, like this {}.
+
+   *Note:* Keys are unique within a dictionary (and any other kind of mapping). Values
+   do not need to be unique within a dictionary.
+
+** the *dict* function
+   You can use the *dict* function to construct dictionaries from other mappings or from
+   sequences of (key, value) pairs:
+
+   #+BEGIN_SRC python
+   >>> item = [('name', 'Gumby'), ('age', 42)]
+   >>> d = dict(item)
+   >>> d
+   {'age': 42, 'name': 'Gumby'}
+   >>> d['name']
+   'Gumby'
+   #+END_SRC
+
+   It can also be used with /keyword arguments/, as follows:
+
+   #+BEGIN_SRC python
+   >>> d = dict(name='Gumby', age=42)
+   >>> d
+   {'age': 42, 'name': 'Gumby'}
+   #+END_SRC
+
+** basic dictionary operations
+   * *len(d)*  returns the number of items (key-value pairs) in *d*.
+   * *d[k]* returns the value associated with the key *k*.
+   * *d[k] = v* associates the value *v* with the key *k*.
+   * *del d[k]* deletes the item with key *k*.
+   * *k in d* checks whether there is an item in *d* that has the key *k*.
+
+   Distinctions between dictionaries and lists:
+
+   *Key types:* Dictionary keys don't have toe be integers(though they may be).
+   They may be immutable type, such as floating-point(real)numbers, strings, or tuples.
+
+   *Automatic addition:* You can assign a value to a key, even if that key isn't in
+   the dictionary to begin with; in that case, a new item will be created. You
+   cannot assign a value to an index outside the list's range(without using *append*
+   or something like that).
+
+   *Membership:* The expression *k in d*(where *d* is a dictionary)looks for a /key/,
+   not a /value/. The expression *v in l*, on the other hand(where *l* is a list)looks
+   for a /value/, not an /index/.
+
+   [[file:./examples/dictionary.py][Dictionary Example]]
+
+** string formatting with dictionaries
+   If you use a dictionary(with only string and keys) instead of a tuple, you can maek
+   the string formatting even snazzier. After the % character in each conversion specifier,
+   you add a key(enclosed in parentheses), which is followed by the other specifier elements:
+
+   #+BEGIN_SRC python
+   >>> phonebook
+   {'Beth': '9102', 'Alice': '2341', 'Ceile': '3258'}
+   >>> "Cecil's phone number is %(Cecil)s." % phonebook
+   "Cecil's phone number is 3258."
+   #+END_SRC
+
+   Using it in template:
+
+   #+BEGIN_SRC python
+   >>> template = '''<html>
+        <head><title>%(title)s</title></head>
+        <body>
+        <h1>%(title)s</h1>
+        <p>%(text)s</p>
+        </body>'''
+   >>> data = {'title': 'My Home Page', 'text': 'Welcome to my home page!'}
+   >>> print template % data
+   <html>
+   <head><title>My Hone Page</title></head>
+   <body>
+   <h1>My Home Page</h1>
+   <p>Welcome to my home page!</p>
+   </body>
+   #+END_SRC
+
+** methods
+*** clear
+    The *clear* method removes all items from the dictionary. This is an in-place
+    operation(like *list.sort*), so it returns nothing(or, rather, *None*):
+
+    #+BEGIN_SRC python
+    >>> d = {}
+    >>> d['name'] = 'Phill'
+    >>> d['age'] = 42
+    >>> d
+    {'age': 42, 'name': 'Phill'}
+    >> returned_value = d.clear()
+    >>> d
+    {}
+    >>> print returned_value
+    None
+    #+END_SRC
+
+*** copy
+    The *copy* method returns a new dictonary with the same key-value pairs(a shallow
+    copy, since the values themselves are the /same/, not copies):
+
+    #+BEGIN_SRC python
+    >>> x = {'username': 'admin', 'machines': ['foo', 'bar', 'baz']}
+    >>> y = x.copy()
+    >>> y['username'] = 'mlh'
+    >>> y['machines'].remove('bar')
+    >>> y
+    {'username': 'mlh', 'machines': ['foo', 'baz']}
+    >>> x
+    {'username': 'admin', 'machines': ['foo', 'baz']}
+    #+END_SRC
+
+    When you replace a value in the copy, the original is unaffected. However, if
+    you /modify/ a value (in place, without replacing it), the original is changed
+    as well because the same value is stored there (like the 'machines' list in this
+    example).
+
+    One way to avoid that problem is to make a *deep copy*, you accomplish this using
+    the function *deepcopy* from the copy module:
+
+    #+BEGIN_SRC python
+    >>> from copy import deepcopy
+    >>> d = {}
+    >>> d['names'] = ['Alfred', 'Bertrand']
+    >>> c = d.copy()
+    >>> dc = deepcopy(d)
+    >>> d['names'].append('Clive')
+    >>> c
+    {'names': ['Alfred', 'Bertrand', 'Clive']}
+    >>> dc
+    {'names': ['Alfred', 'Bertrand']}
+    #+END_SRC
+
+*** fromkeys
+    The *fromkeys* method creates a new dictionary with the given keys, each with a
+    default corresponding value of *None*:
+
+    #+BEGIN_SRC pyhon
+    >>> {}.fromkeys(['name', 'age'])
+    {'age': None, 'name': None}
+    #+END_SRC
+
+    Instead, you can call the method directly on dict, which (as mentioned before)
+    is the type of all dictionaries.
+
+    #+BEGIN_SRC python
+    >>> dict.fromkeys(['name', 'age'])
+    {'age': None, 'name': None}
+    #+END_SRC
+
+    If you don’t want to use None as the default value, you can supply your own default:
+    #+BEGIN_SRC python
+    >>> dict.fromkeys(['name', 'age'], '(unknown)')
+    {'age': '(unknown)', 'name': '(unknown)'}
+    #+END_SRC
+
+*** get
+    The *get* method is a forgiving way of a accessing dictionary items. Ordinarily,
+    when you try to access an item that is not present in the dictionary, things go
+    very wrong:
+
+    #+BEGIN_SRC python
+    >>> d = {}
+    >>> print d['name']
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in ?
+    KeyError: 'name'
+    #+END_SRC
+
+    Not so with get:
+
+    #+BEGIN_SRC python
+    Not so with get:
+    >>> print d.get('name')
+    None
+    #+END_SRC
+
+    As you can see, when you use get to access a nonexistent key, there is no exception.
+    Instead, you get the value None. You may supply your own “default” value, which is
+    then used instead of None:
+
+    #+BEGIN_SRC python
+    >>> d.get('name', 'N/A')
+    'N/A'
+    #+END_SRC
+
+    If the key is there, get works like ordinary dictionary lookup:
+
+    #+BEGIN_SRC python
+    >>> d['name'] = 'Eric'
+    >>> d.get('name')
+    'Eric'
+    #+END_SRC
+    [[file:./examples/dictionary_method.py][Dictionary Method Example]]
+
+*** has_key
+    The *has_key* method checks whether a dictionary has a given key. The
+    expression *d.has_key(k)* is euivalent to *k in d*.
+
+    #+BEGIN_SRC python
+    >>> d = {}
+    >>> d.has_key('name')
+    False
+    >>> d['name'] = 'Eric'
+    >>> d.has_key('name')
+    True
+    #+END_SRC
+
+*** items and iteritems
+    The *items* method returns all the items of the dictionary as a list of
+    items in which each item is of the form(key, value). The items are not
+    returnd in any particular order:
+
+    #+BEGIN_SRC python
+    >>> d = {'title': 'Python Web Site', 'url': 'http://www.python.org', 'spam': 0}
+    >>> d.items()
+    [('url', 'http://www.python.org'), ('spam', 0), ('title', 'Python Web Site')]
+    #+END_SRC
+
+    The *iteritems* method works in much the same way, but returns an /iterator/
+    instead of a list:
+
+    #+BEGIN_SRC python
+    >>> it = d.iteritems()
+    >>> it
+    <dictionary-iterator object at 0x7ff15c3c35d0>
+    >>> list(it) # Convert the iterator to a list
+    [('url', 'http://www.python.org'), ('spam', 0), ('title', 'Python Web Site')]
+    #+END_SRC
+
+*** keys and iterkeys
+    The *keys* method returns a list of the keys in the dictionary, while *iterkeys*
+    returns an iterator over the keys.
+
+*** pop
+    The *pop* method can be used to get the value corresponding to a given key, and
+    then remove the key-value pair from the dictionary:
+
+    #+BEGIN_SRC python
+    >>> d = {'x': 1, 'y': 2}
+    >>> d.pop('x')
+    1
+    >>> d
+    {'y': 2}
+    #+END_SRC
+
+*** popitem
+    The *popitem* method is similar to *list.pop*, which pops off the last
+    element of a list. Unlike *list.pop*, however *popitem* pops off an arbirary
+    item because dictionaries don't have a "last element" or any order whatsoever.
+    This may be very useful if you want to remve and process the items one by one
+    in an efficient way(without retrieving a list of the keys first):
+
+    #+BEGIN_SRC python
+    >>> d
+    {'url': 'http://www.python.org', 'spam': 0, 'title': 'Python Web Site'}
+    >>> d.popitem()
+    ('url', 'http://www.python.org')
+    >>> d
+    {'spam': 0, 'title': 'Python Web Site'}
+    #+END_SRC
+
+    Although *popitem* is similar to the list method *pop*, there is no dictionary
+    equivalent of *append* (which adds an element to the end of a list).
+
+*** setdefault
+    The *setdefault* method is somewhat similar to *get*, in that it retrives a valve
+    associated with a given key. In addition to the *get* functionality, *setdefault*
+    /sets/ the value corresponding to the given key if it is not already in the
+    dictionary:
+
+    #+BEGIN_SRC python
+    >>> d = {}
+    >>> d.setdefault('name', 'N/A')
+    'N/A'
+    >>> d
+    {'name': 'N/A'}
+    >>> d['name'] = 'Gumby'
+    >>> d.setdefault('name', 'N/A')
+    'Gumby'
+    >>> d
+    {'name': 'Gumby'}
+    #+END_SRC
+
+    As you can see, when the key is missing, *setdefault* returns the default and updates
+    the dictionary accordingly. If the key is present, its value is retruned and the
+    dictionary is left unchanged. The defalut is optional, as with *get*; if it is left
+    out, None is used.
+
+*** update
+    The *update* method updates one dictionary with the items of another:
+
+    #+BEGIN_SRC python
+    >>> d = {
+           'title': 'Python Web Site',
+           'url': 'http://www.python.org',
+           'changed': 'Mar 14 22:09:15 MET 2008'
+        }
+    >>> x = {'title': 'Python Language Website'}
+    >>> d.update(x)
+    >>> d
+    {'url': 'http://www.python.org', 'changed':
+    'Mar 14 22:09:15 MET 2008', 'title': 'Python Language Website'}
+    #+END_SRC
+
+    The *update* method can be called in the same way as the *dict* function(or type
+    constructor), as discussed earlier in this chapter. This means that *update* can be called
+    with a mapping, a sequence(or other iterable object) of (key, value) pairs, or keyword
+    arguments.
+
+*** values and itervalues
+    The *values* method returns a list of the values in the dictionary(and *itervalues*
+    returns an iterator of the values). Unlike *keys*, the list returned by *values* may
+    contain duplicates:
+
+    #+BEGIN_SRC python
+    >>> d = {}
+    >>> d[1] = 1
+    >>> d[2] = 2
+    >>> d[3] = 3
+    >>> d[4] = 1
+    >>> d.values()
+    [1, 2, 3, 1]
+    #+END_SRC
+
+** new functions
+   |-----------+----------------------------------------------------------------------------|
+   | function  | description                                                                |
+   |-----------+----------------------------------------------------------------------------|
+   | dict(seq) | creats diction from (key, value) pairs (or a mapping or keyword arguments) |
+   |-----------+----------------------------------------------------------------------------|
+
+* Conditionals, Loops, and some other statements
+** printing with commas
+   You can actually print more than one expression, as long as you separate
+   them with commas:
+
+   #+BEGIN_SRC python
+   >>> print 'Age:', 42
+   Age: 42
+   #+END_SRC
+
+   As you can see, a space character is inserted between each argument.
+   *Note:* The arguments of *print* do /not/ form a tuple, as one might
+   expect:
+   #+BEGIN_SRC python
+   >>> 1, 2, 3
+   (1, 2, 3)
+   >>> print 1, 2, 3
+   1 2 3
+   >>> print (1, 2, 3)
+   (1, 2, 3)
+   #+END_SRC
+
+   If you add a comma at the end, your next print statement will continue
+   printing on the same line. For example, the statements
+
+   #+BEGIN_SRC python
+   print 'Hello,',
+   print 'world!'
+   #+END_SRC
+
+** importing something as something else
+   Usually, when you import something from a module, you either use
+
+   #+BEGIN_SRC python
+   import somemodule
+   #+END_SRC
+
+   or
+
+   #+BEGIN_SRC python
+   from somemodule import somefunction
+   #+END_SRC
+
+   or
+
+   #+BEGIN_SRC python
+   from somemodule import somefunciton, anotherfunction, yetanotherfunction
+   #+END_SRC
+
+   or
+
+   #+BEGIN_SRC python
+   from somemodule import *
+   #+END_SRC
+
+   But what if you have two modules, each containing a function called
+   *open*, for example--what do you do then? You could simply import the
+   modules using the first form, and then use the functions as follows:
+
+   #+BEGIN_SRC python
+   module1.open(...)
+   module2.open(...)
+   #+END_SRC
+
+   But there is another option: add an *as* clause to the end and supply
+   the name you want to use, either for the entire module:
+
+   #+BEGIN_SRC python
+   >>> import math as foobar
+   >>> foobar.sqrt(4)
+   2.0
+   #+END_SRC
+
+   or for the given function:
+
+   #+BEGIN_SRC python
+   >>> from math import sqrt as foobar
+   >>> foobar(4)
+   2.0
+   #+END_SRC
+
+** assignment magic
+*** sequence unpacking
+   You can perform several different assignments /simultaneously/:
+
+   #+BEGIN_SRC python
+   >>> x, y, z = 1, 2, 3
+   >>> print x, y, z
+   1 2 3
+   #+END_SRC
+
+   Well, you can use it to switch the contents of two(or more) variables:
+
+   #+BEGIN_SRC python
+   >>> x, y = y, x
+   >>> print x, y, z
+   2 1 3
+   #+END_SRC
+
+   Here is called *sequence unpacking(or iterable unpacking)*. I have a
+   sequence (or an arbitrary iterable object) of values, and I unpack it
+   into a sequence of variables.
+
+   #+BEGIN_SRC python
+   >>> values = 1, 2, 3
+   >>> values
+   (1, 2, 3)
+   >>> x, y, z = values
+   >>> x
+   1
+   #+END_SRC
+
+   This allows functions to return more than one value, packed as a tuple, easily
+   accessible through a single assignment. The sequence you unpack must have exactly
+   as many items as the targets you list on the left of the = sign; otherwise Python
+   raises an exception when the assignment is performed:
+
+   #+BEGIN_SRC python
+   >>> x, y, z = 1, 2
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   ValueError: need more than 2 values to unpack
+   >>> x, y, z = 1, 2, 3, 4
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   ValueError: too many values to unpack
+   #+END_SRC
+
+   *Note:* Python 3.0 has another unpacking feature: you can use the star operator(*),
+   just as in function argument lists. For example, a, b, rest* = [1, 2, 3, 4] will result
+   in *rest* gathering whatever remains after assigning calues to *a* and *b*. In
+   this case, *reset* will be [3, 4].
+
+*** chained assignments
+    Chained assignments are used as a shortcut when you want to bind several variables
+    to the same value. This may seem a bit like the simultaneous assignments, except
+    that here you are dealing with only one value:
+
+    #+BEGIN_SRC python
+    x = y = somefunction()
+    #+END_SRC
+
+    which is the same as
+
+    #+BEGIN_SRC python
+    y = somefunction()
+    x = y
+    #+END_SRC
+
+*** augemented assignments
+    #+BEGIN_SRC python
+    >>> x = 2
+    >>> x += 1
+    >>> x *=2
+    >>> x
+    6
+    #+END_SRC
+
+** blocks
+   A block is a group of statements that can be executed if a condition is true
+   (conditional statements), or executed several times (loops), and so on. A
+   block is created by indenting a part of your code; that is, putting spaces in
+   front of it.
+
+   *Note:* You can use tab characters to indent your blocks as well. Python interprets
+   a tab as moving to the next tab stop, with one tab stop every eight spaces, but
+   the standard and preferable style is to use spaces only, not tabs, and specifically
+   four spaces per each level of indentation.
+
+   In many languages, a special word or character (for example, begin or {) is used
+   to start a block, and another (such as end or }) is used to end it. In Python, a
+   colon (:) is used to indicate that a block is about to begin, and then every line
+   in that block is indented (by the same amount). When you go back to the same amount
+   of indentation as some enclosing block, you know that the current block has ended.
+
+** conditions and conditional statements
+*** boolean values
+    The following values are considered by the interpreter to mean false when
+    evaluated as a Boolean expression (for example, as the condition of an if
+    statement):
+
+    False    None    0    ""    ()    []    {}
+
+*** conditional execution and the *if* statement
+    There is a tiny difference compared with other languages, the
+    *else if* in other language is *elif* in pyhon.
+
+**** comparison operators
+     |------------+--------------------------------------|
+     | expression | description                          |
+     |------------+--------------------------------------|
+     | x == y     | x /equals/ y                         |
+     |------------+--------------------------------------|
+     | x < y      | x is /less than/ y                   |
+     |------------+--------------------------------------|
+     | x > y      | x is /greater than/ y                |
+     |------------+--------------------------------------|
+     | x >= y     | x is /greater than or equal to/ y    |
+     |------------+--------------------------------------|
+     | x <= y     | x is /less than or equal to/ y       |
+     |------------+--------------------------------------|
+     | x != y     | x is /not equal to/ y                |
+     |------------+--------------------------------------|
+     | x is y     | x and y are the same object          |
+     |------------+--------------------------------------|
+     | x is not y | x and y are different objects        |
+     |------------+--------------------------------------|
+     | x in y     | x is a member of the container y     |
+     |------------+--------------------------------------|
+     | x not in y | x is not a member of the container y |
+     |------------+--------------------------------------|
+
+     Comparisons can be /chained/ in Python, just like assignments -- you can put
+     several comparison operators in a chain, like this: 0 < age < 100.
+
+     *Tip:* When comparing things, you can also use the built-in function *cmp*.
+
+     *is* tests for *identity*, rather than *equality*.
+
+*** assertions
+    There is a useful relative of the if statement, which works more or less like this
+    (pseudocode):
+
+    if not condition:
+        crash program
+
+    Basically, you can require that certain things be true (for example, when
+    checking required properties of parameters to your functions or as an aid
+    during initial testing and debugging). The keyword used in the statement
+    is *assert*:
+
+    #+BEGIN_SRC python
+    >>> age = 10
+    >>> assert 0 < age < 100
+    >>> age = -1
+    >>> assert 0 < age < 100
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in ?
+    AssertionError
+    #+END_SRC
+
+    It can be useful to put the assert statement in your program as a checkpoint, if you know
+    something must be true for your program to work correctly.
+    A string may be added after the condition, to explain the assertion:
+
+    #+BEGIN_SRC python
+    >>> age = -1
+    >>> assert 0 < age < 100, 'The age must be realistic'
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in ?
+    AssertionError: The age must be realistic
+    #+END_SRC
+
+*** loops
+**** *while* loop
+     nothing unique compared with other languages.
+
+**** *for* loop
+     *in* is a useful expression:
+
+     #+BEGIN_SRC python
+     words = ['this', 'is', 'an', 'ex', 'parrot']
+     for word in words:
+     print word
+     #+END_SRC
+
+     Python has a built-in function to make ranges for you:
+     #+BEGIN_SRC python
+     >>> range(0, 10)
+     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     >>> range(10)
+     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     #+END_SRC
+
+     The following program writes out the numbers from 1 to 100:
+
+     #+BEGIN_SRC python
+     for number in range(1, 101):
+         print number
+     #+END_SRC
+
+**** iterating over dictionaries
+     #+BEGIN_SRC python
+     d = {'x': 1, 'y': 2, 'z': 3}
+     for key in d:
+         print key, 'corresponds to', d[key]
+     #+END_SRC
+
+**** iteration utilities
+***** parallel iteration
+      Sometimes you want to iterate over two sequences at the same time.
+      Let’s say that you have the following two lists:
+
+      #+BEGIN_SRC python
+      names = ['anne', 'beth', 'george', 'damon']
+      ages = [12, 45, 32, 102]
+      #+END_SRC
+
+      If you want to print out names with corresponding ages, you could do the following:
+
+      #+BEGIN_SRC python
+      for i in range(len(names)):
+          print names[i], 'is', ages[i], 'years old'
+      #+END_SRC
+
+      Here, i serves as a standard variable name for loop indices (as these
+      things are called).
+
+      A useful tool for parallel iteration is the built-in function *zip*, which "zips"
+      together the sequences, returning a list of tuples:
+
+      #+BEGIN_SRC python
+      >>> zip(names, ages)
+      [('anne', 12), ('beth', 45), ('george', 32), ('damon', 102)]
+      #+END_SRC
+
+      Now I can unpack the tuples in my loop:
+
+      #+BEGIN_SRC python
+      for name, age in zip(names, ages):
+          print name, 'is', age, 'years old'
+      #+END_SRC
+
+***** numbered iteration
+      In some cases, you want to iterate over a sequence of objects and at the same
+      time have access to the index of the current object.
+
+      #+BEGIN_SRC python
+      for string in strings:
+          if 'xxx' in string:
+              index = strings.index(string) # Search for the string in the list of strings
+              strings[index] = '[censored]'
+      #+END_SRC
+
+      A better version would be the following:
+
+      #+BEGIN_SRC python
+      index = 0
+      for string in strings:
+          if 'xxx' in string:
+              strings[index] = '[censored]'
+              index += 1
+      #+END_SRC
+
+      This also seems a bit awkward, although acceptable. Another solution is to use
+      the built-in function *enumerate*:
+
+      #+BEGIN_SRC python
+      for index, string in enumerate(strings):
+          if 'xxx' in string:
+              strings[index] = '[censored]'
+      #+END_SRC
+
+      This function lets you iterate over index-value pairs, where the indices are
+      supplied automatically.
+
+***** reversed and sorted iteration
+      *reversed* and *sorted*, they're similar to the list methods *reverse* and *sort*,
+      but they work on any sequence or iterable object, and instead of modifying the
+      object in place, they return reversed and sorted versions:
+
+      #+BEGIN_SRC python
+      >>> sorted([4, 3, 6, 8, 3])
+      [3, 3, 4, 6, 8]
+      >>> sorted('Hello, world!')
+      [' ', '!', ',', 'H', 'd', 'e', 'l', 'l', 'l', 'o', 'o', 'r', 'w']
+      >>> list(reversed('Hello, world!'))
+      ['!', 'd', 'l', 'r', 'o', 'w', ' ', ',', 'o', 'l', 'l', 'e', 'H']
+      >>> ''.join(reversed('Hello, world!'))
+      '!dlrow ,olleH'
+      #+END_SRC
+
+**** breaking out of loops
+***** break
+      To end (break out of) a loop, you use *break*.
+
+***** continue
+      The continue statement is used less often than break. It causes the
+      current iteration to end, and to “jump” to the beginning of the next. It
+      basically means “skip the rest of the loop body, but don’t end the loop.”
+
+*** list comprehension
+    List comprehension is a way of making lists from other lists. It works in a
+    way similar to for loops and is actually quite simple:
+
+    #+BEGIN_SRC python
+    >>> [x*x for x in range(10)]
+    [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+    #+END_SRC
+
+    You can also add more for parts:
+
+    #+BEGIN_SRC python
+    >>> [(x, y) for x in range(3) for y in range(3)]
+    [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+    #+END_SRC
+
+*** *pass*, *del*, and *exec*
+**** pass
+    Sometimes you need to do nothing. This may not be very often, but when it
+    happens, it’s good to know that you have the pass statement:
+
+    #+BEGIN_SRC python
+    >>> pass
+    >>>
+    #+END_SRC
+
+    Now, why on earth would you want a statement that does nothing? It can be
+    useful as a placeholder while you are writing code. For example, you may
+    have written an if statement and you want to try it, but you lack the code
+    for one of your blocks. Consider the following:
+
+    #+BEGIN_SRC python
+    if name == 'Ralph Auldus Melish':
+        print 'Welcome!'
+    elif name == 'Enid':
+        # Not finished yet...
+    elif name == 'Bill Gates':
+        print 'Access Denied'
+    #+END_SRC
+
+    This code won’t run because an empty block is illegal in Python. To fix this,
+    simply add a pass statement to the middle block:
+
+    #+BEGIN_SRC python
+    if name == 'Ralph Auldus Melish':
+        print 'Welcome!'
+    elif name == 'Enid':
+        # Not finished yet...
+        pass
+    elif name == 'Bill Gates':
+        print 'Access Denied'
+    #+END_SRC
+
+**** del
+     *del* just delete the /name/, itself(the value). In fact, there is no way to
+     delete values in Python -- and you don't realyy need to, because the Python
+     interpreter does it by itself whenever you don't use the value anymore.
+
+**** exec and eval
+***** exec
+     The statement for executing a string is exec:
+
+     #+BEGIN_SRC python
+     >>> exec "print 'Hello, world!'"
+     Hello, world!
+     #+END_SRC
+
+     In most cases, you want to supply it with a namespace—a place where it can put
+     its variables. You want to do this so that the code doesn’t corrupt your namespace
+     (that is, change your variables). For example, let’s say that the code uses
+     the name sqrt:
+
+     #+BEGIN_SRC python
+     >>> from math import sqrt
+     >>> exec "sqrt = 1"
+     >>> sqrt(4)
+     Traceback (most recent call last):
+       File "<pyshell#18>", line 1, in ?
+         sqrt(4)
+     TypeError: object is not callable: 1
+     #+END_SRC
+
+
+     The exec statement is mainly useful when you build the code string on the fly.
+     And if the string is built from parts that you get from other places, and possibly
+     from the user, you can rarely be certain of exactly what it will contain. So to be
+     safe, you give it a dictionary, which will work as a namespace for it.
+
+     You do this by adding in <scope>, where <scope> is some dictionary that will function
+     as the namespace for your code string:
+
+     #+BEGIN_SRC python
+     >>> from math import sqrt
+     >>> scope = {}
+     >>> exec 'sqrt = 1' in scope
+     >>> sqrt(4)
+     2.0
+     >>> scope['sqrt']
+     1
+     #+END_SRC
+
+***** eval
+      A built-in function that is similar to exec is eval (for “evaluate”). Just
+      as exec executes a series of Python statements, eval evaluates a Python
+      expression (written in a string) and returns the resulting value. (exec
+      doesn’t return anything because it is a statement itself.) For example, you
+      can use the following to make a Python calculator:
+
+      #+BEGIN_SRC python
+      >>> eval(raw_input("Enter an arithmetic expression: "))
+      Enter an arithmetic expression: 6 + 18 * 2
+      42
+      #+END_SRC
+
+*** new function
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | function                             | description                                                              |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | chr(n)                               | Returns a one-character string when passed ordinal n_ (0dn < 256)        |
+    | eval(source[, globals[, locals]])    | Evaluates a string as an expression and returns                the value |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | enumerate(seq)                       | Yields (index, value) pairs suitable for iteration                       |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | ord(c)                               | Returns the integer ordinal value of a one-character string              |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | range([start,] stop[, step])         | Creates a list of integers                                               |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | reversed(seq)                        | Yields the values of seq in reverse order, suitable for iteration        |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | sorted(seq[, cmp][, key][, reverse]) | Returns a list with the values of seq in sorted order                    |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | xrange([start,] stop[, step])        | Creates an xrange object, used for iteration                             |
+    |--------------------------------------+--------------------------------------------------------------------------|
+    | zip(seq1,_seq2,...)                  | Creates a new sequence suitable for parallel iteration                   |
+    |--------------------------------------+--------------------------------------------------------------------------|
