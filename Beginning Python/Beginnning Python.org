@@ -1,8 +1,6 @@
 #+TITLE:Beginning Python: From Novice to Prefessional
 * The Basics
 ** Numbers and Expressions
-   Real numbers are called /floats/ (or /floating-point numbers) in Python. If
-   either one of the numbers in a division is a float, the result will be, too:
    #+BEGIN_SRC python
    >>> 1.0 / 2.0
    0.5
@@ -16,21 +14,23 @@
    >>> 1 / 2.
    0.5
    #+END_SRC
+   Real numbers are called /floats/ (or /floating-point numbers) in Python. If
+   either one of the numbers in a division is a float, the result will be, too:
    If you would rather have Python do proper division, you could add the follwing
    statement to the beginning of your program:
-   #+BEGIN_SRC python
-   >>> from __future__ import division
-   #+END_SRC
-
    Another alternative, if you're running Python from the command line, is to supply
    the command-line switch -Qnew. In either case, division will suddenly make a bit
    more sense:
+   Of course, the single slash can no longer be used for the kind of integer division
+   shown earlier. A separate operator will do this - double slash:
+
+   #+BEGIN_SRC python
+   >>> from __future__ import division
+   #+END_SRC
    #+BEGIN_SRC python
    >>> 1 / 2
    0.5
    #+END_SRC
-   Of course, the single slash can no longer be used for the kind of integer division
-   shown earlier. A separate operator will do this - double slash:
    #+BEGIN_SRC python
    >>> 1 // 2
    0
@@ -239,7 +239,6 @@
    |--------------------------+------------------------------------------------------------|
    | str(object)              | Converts a value to string                                 |
    |--------------------------+------------------------------------------------------------|
-
 * Lists and Tuples
    The most basic data structure in Python is the *sequence*. Each element of a
    sequence is assigned a number-its position, or /index/. The first index is
@@ -1905,3 +1904,222 @@
     |--------------------------------------+--------------------------------------------------------------------------|
     | zip(seq1,_seq2,...)                  | Creates a new sequence suitable for parallel iteration                   |
     |--------------------------------------+--------------------------------------------------------------------------|
+
+* Abstraction
+** creating functions
+   Define a function with the *def* (or "function definition") statement:
+
+   #+BEGIN_SRC python
+   def hello(name):
+       return 'Hello, ' + name + '!'
+   #+END_SRC
+** documenting functions
+   If you want to document your functions so that you’re certain that others will
+   understand them later on, you can add comments (beginning with the hash sign, #).
+
+   Another way of writing comments is simple to write strings by themselves. Such
+   strings can be particularly useful in some places, such as immediately after a
+   *def* statement(and at the beginning of a module or a class). If you put a string
+   at the beginning of a function, it is stored as part of the function and is called
+   a /docstring/. The following code demonstrates how to add a docstring to a function:
+
+   #+BEGIN_SRC python
+   def square(x):
+       'Calculates the square of the number x.'
+       return x*x
+   #+END_SRC
+
+   The docstring may be accessed like this:
+
+   #+BEGIN_SRC python
+   >>> square.__doc__
+   'Calculates the square of the number x.'
+   #+END_SRC
+
+   *Note:*__doc__ is a function attribute.
+
+   A special built-in function called help can be quite useful. If you use it in the
+   interactive interpreter, you can get information about a function, including its
+   docstring:
+
+   #+BEGIN_SRC python
+   >>> help(square)
+   Help on function square in module __main__:
+
+   square(x)
+   Calculates the square of the number x.
+   #+END_SRC
+
+** patameters
+   *Note:* Parameters are kept in what is called a *local scope*.
+
+   Strings (and numbers and tuples) are immutable, which means that you can’t modify
+   them (that is, you can only replace them with new values).
+
+   When two variables refer to the same list, they . . . refer to the same list. It’s
+   really as simple as that. If you want to avoid this, you must make a copy of the list.
+   When you do slicing on a sequence, the returned slice is always a copy. Thus, if
+   you make a slice of the entire list, you get a copy:
+
+   #+BEGIN_SRC python
+   >>> names = ['Mrs. Entity', 'Mrs. Thing']
+   >>> n = names[:]
+   #+END_SRC
+
+   In some languages (such as C++, Pascal, and Ada), rebinding parameters and having
+   these changes affect variables outside the function is an everyday thing. In Python,
+   it’s not directly possible; you can modify only the parameter objects themselves.
+
+
+   The parameters that are supplied with a name like this are called keyword parameters.
+   On their own, the key strength of keyword parameters is that they can help clarify
+   the role of each parameter.
+
+   #+BEGIN_SRC python
+   >>> hello(greeting='Hello', name='world')
+   Hello, world!
+   #+END_SRC
+
+   What really makes keyword arguments rock, however, is that you can give the parameters
+   in the function default values:
+
+   #+BEGIN_SRC python
+   def hello(greeting='Hello', name='world'):
+       print '%s, %s!' % (greeting, name)
+   #+END_SRC
+
+   When a parameter has a default value like this, you don’t need to supply it when
+   you call the function! You can supply none, some, or all, as the situation might
+   dictate:
+
+   #+BEGIN_SRC python
+   >>> hello()
+   Hello, world!
+   >>> hello('Greetings')
+   Greetings, world!
+   >>> hello('Greetings', 'universe')
+   Greetings, universe!
+   #+END_SRC
+
+   As you can see, this works well with positional parameters, except that you must
+   supply the greeting if you want to supply the name. What if you want to supply
+   only the name, leaving the default value for the greeting?
+
+   #+BEGIN_SRC python
+   >>> hello(name='Gumby')
+   Hello, Gumby!
+   #+END_SRC
+
+*** collecting parameters
+    Sometimes it can be useful to allow the user to supply any number of parameters.
+    For example, you can store only one name at a time. It would be nice to be able
+    to store more names, like this:
+
+    #+BEGIN_SRC python
+    >>> store(data, name1, name2, name3)
+    #+END_SRC
+
+    For this to be useful, you should be allowed to supply as many names as you want.
+    Actually, that’s quite possible.
+
+    #+BEGIN_SRC python
+    def print_params(*params):
+        print params
+
+    >>> print_params('Testing')
+    ('Testing',)
+    >>> print_params(1, 2, 3)
+    (1, 2, 3)
+    #+END_SRC
+
+    The star in front of the parameter puts all the values into the same tuple.
+    Does it handle keyword arguments (the same as parameters), too?
+
+    #+BEGIN_SRC python
+    >>> print_params_2('Hmm...', something=42)
+    Traceback (most recent call last):
+    File "<pyshell#60>", line 1, in ?
+    print_params_2('Hmm...', something=42)
+    TypeError: print_params_2() got an unexpected keyword argument 'something'
+    #+END_SRC
+
+    So we probably need another “gathering” operator for keyword arguments. What
+    do you think that might be? Perhaps **?
+
+    #+BEGIN_SRC python
+    def print_params_3(**params):
+        print params
+
+    >>> print_params_3(x=1, y=2, z=3)
+    {'z': 3, 'x': 1, 'y': 2}
+    #+END_SRC
+
+    Yep, we get a dictionary rather than a tuple. Let’s put them all together:
+
+    #+BEGIN_SRC python
+    def print_params_4(x, y, z=3, *pospar, **keypar):
+        print x, y, z
+        print pospar
+        print keypar
+    #+END_SRC
+    This works just as expected:
+
+    #+BEGIN_SRC python
+    >>> print_params_4(1, 2, 3, 5, 6, 7, foo=1, bar=2)
+    1 2 3
+    (5, 6, 7)
+    {'foo': 1, 'bar': 2}
+    >>> print_params_4(1, 2)
+    1 2 3
+    ()
+    {}
+    #+END_SRC
+
+*** reversing the process
+    Let's say you have with two numbers that you want to add:
+
+    #+BEGIN_SRC python
+    def add(x ,y): return x + y
+    params = (1, 2)
+    #+END_SRC
+
+    Instead of gathering the parameters, we want to /distribute/ them. This is
+    simply done by using the * operator at the "other end" -- that is, when
+    calling the function rather than when defining it:
+
+    #+BEGIN_SRC python
+    >>> add(*params)
+    3
+    #+END_SRC
+
+    We can use the same technique with dictionaries, using the ** operator.
+    Using * (or **) both when you define and call the function will simply pass
+    the tuple or dictionary right through, so you might as well not have
+    bothered:
+
+    #+BEGIN_SRC python
+    >>> def with_stars(**kwds):
+        print kwds['name'], 'is', kwds['age'], 'years old'
+
+    >>> def without_stars(kwds):
+        print kwds['name'], 'is', kwds['age'], 'years old'
+    >>> args = {'name': 'Mr. Me', 'age': 42}
+    >>> with_stars(**args)
+    Mr. Me is 42 years old
+    >>> without_stars(args)
+    Mr. Me is 42 years old
+    #+END_SRC
+
+    *Tip:* It may be useful to use these splicing operators to “pass through”
+    parameters, without worrying too much about how many there are, and so forth.
+    Here is an example:
+
+    #+BEGIN_SRC python
+    def foo(x, y, z, m=0, n=0):
+        print x, y, z, m, n
+    def call_foo(*args,**kwds):
+        print "Calling foo!"
+        foo(*args,**kwds)
+    #+END_SRC
+
+    This can be particularly useful when calling the constructor of a superclass
