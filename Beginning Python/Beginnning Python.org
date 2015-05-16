@@ -2099,10 +2099,10 @@
 
     #+BEGIN_SRC python
     >>> def with_stars(**kwds):
-        print kwds['name'], 'is', kwds['age'], 'years old'
+            print kwds['name'], 'is', kwds['age'], 'years old'
 
     >>> def without_stars(kwds):
-        print kwds['name'], 'is', kwds['age'], 'years old'
+            print kwds['name'], 'is', kwds['age'], 'years old'
     >>> args = {'name': 'Mr. Me', 'age': 42}
     >>> with_stars(**args)
     Mr. Me is 42 years old
@@ -2122,4 +2122,149 @@
         foo(*args,**kwds)
     #+END_SRC
 
-    This can be particularly useful when calling the constructor of a superclass
+    This can be particularly useful when calling the constructor of a superclass.
+
+** scoping
+   There is a built-in function called *vars*, which returns the dictionary that
+   contains variavles and its values.
+
+   #+BEGIN_SRC python
+   >>> x = 1
+   >>> scope = vars()
+   >>> scope['x']
+   1
+   >>> scope['x'] += 1
+   >>> x
+   2
+   #+END_SRC
+
+   *Caution:* In general, you should not modify the dictionary returned by vars
+   because, according to the official Python documentation, the result is
+   undefined. In other words, you might not get the result you’re after.
+
+   This sort of “invisible dictionary” is called a /namespace or scope./
+
+   #+BEGIN_SRC python
+   >>> def foo(): x = 42
+   >>> x = 1
+   >>> foo()
+   >>> x
+   1
+   #+END_SRC
+
+   Here foo changes (rebinds) the variable x, but when you look at it in the
+   end, it hasn’t changed after all. That’s because when you call foo, a *new*
+   namespace is created, which is used for the block inside foo. The assignment
+   x = 42 is performed in this inner scope (the *local namespace*), and therefore
+   it doesn’t affect the x in the outer (*global*) scope.
+
+   *THE PROBLEM OF SHADOWING*
+   Reading the value of global variables is not a problem in general, but one
+   thing may make it problematic. If a local variable or parameter exists with
+   the same name as the global variable you want to access, you can’t do it
+   directly. The global variable is shadowed by the local one. If needed, you
+   can still gain access to the global variable by using the function globals,
+   a close relative of vars, which returns a dictionary with the global variables.
+   (locals returns a dictionary with the local variables.)
+   For example, if you had a global variable called parameter in the previous
+   example, you couldn’t access it from within combine because you have a parameter
+   with the same name. In a pinch, however, you could have referred to it as
+   globals()['parameter']:
+
+   #+BEGIN_SRC python
+   >>> def combine(parameter):
+       print parameter + globals()['parameter']
+   >>> parameter = 'berry'
+   >>> combine('Shrub')
+   Shrubberry
+   #+END_SRC
+
+
+   *Rebinding* global variables (making them refer to some new value) is another
+   matter. If you assign a value to a variable inside a function, it automatically
+   becomes local unless you tell Python otherwise.
+
+   #+BEGIN_SRC python
+   >>> x = 1
+   >>> def change_global():
+           global x
+           x += 1
+   >>> chagne_global()
+   >>> x
+   2
+   #+END_SRC
+
+   Python functions may be nested.
+
+   #+BEGIN_SRC python
+   def foo():
+       def bar():
+           print "Hello, world"
+       bar()
+   #+END_SRC
+
+   Nesting is normally not all that useful, but there is one particular application
+   that stands out: using one function to “create” another. This means that you can
+   (among other things) write functions like the following:
+
+   #+BEGIN_SRC python
+   def multiplier(factor):
+       def multiplyByFactor(number):
+           return number*factor
+       return multiplyByFactor
+   #+END_SRC
+
+   One function is inside another, and the outer function returns the inner one;
+   that is, the function itself is returned—it is not called. What’s important is
+   that the returned function still has access to the scope where it was defined;
+   in other words, it carries its environment (and the associated local variables)
+   with it!
+   Each time the outer function is called, the inner one gets redefined, and each
+   time, the variable factor may have a new value. Because of Python’s nested scopes,
+   this variable from the outer local scope (of multiplier) is accessible in the
+   inner function later on:
+
+   #+BEGIN_SRC python
+   >>> double = multiplier(2)
+   >>> double(5)
+   10
+   >>> triple = multiplier(3)
+   >>> triple(3)
+   9
+   >>> multiplier(5)(4)
+   20
+   #+END_SRC
+
+   A function such as multiplyByFactor that stores its enclosing scopes is called a
+   closure.
+   Normally, you cannot rebind variables in outer scopes. In Python 3.0, however,
+   the keyword nonlocal is introduced. It is used in much the same way as global,
+   and lets you assign to variables in outer (but non-global) scopes.
+
+** recursion
+   A similar function definition would be
+
+   #+BEGIN_SRC python
+   def recursion():
+       return recursion()
+   #+END_SRC
+
+   A useful recursive function usually consists of the following parts:
+
+   * A base case (for the smallest possible problem) when the function returns a value
+   directly
+   * A recursive case, which contains one or more recursive calls on smaller parts of the
+   problem
+
+** new function
+    |-------------------------------+-----------------------------------------------------------------|
+    | map(func, seq [, seq, ...])   | Applies the function to all the elements in the sequences       |
+    |-------------------------------+-----------------------------------------------------------------|
+    | filter(func, seq)             | Returns a list of those elements for which the function is true |
+    |-------------------------------+-----------------------------------------------------------------|
+    | reduce(func, seq [, initial]) | Equivalent to func(func(func(seq[0], seq[1]), seq[2]), ...)     |
+    |-------------------------------+-----------------------------------------------------------------|
+    | sum(seq)                      | Returns the sum of all the elements of seq                      |
+    |-------------------------------+-----------------------------------------------------------------|
+    | apply(func[, args[, kwargs]]) | Calls the function, optionally supplying argument               |
+    |-------------------------------+-----------------------------------------------------------------|
