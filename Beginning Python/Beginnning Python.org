@@ -1,6 +1,8 @@
 #+TITLE:Beginning Python: From Novice to Prefessional
 * The Basics
+
 ** Numbers and Expressions
+
    #+BEGIN_SRC python
    >>> 1.0 / 2.0
    0.5
@@ -14,6 +16,7 @@
    >>> 1 / 2.
    0.5
    #+END_SRC
+
    Real numbers are called /floats/ (or /floating-point numbers) in Python. If
    either one of the numbers in a division is a float, the result will be, too:
    If you would rather have Python do proper division, you could add the follwing
@@ -27,26 +30,34 @@
    #+BEGIN_SRC python
    >>> from __future__ import division
    #+END_SRC
+
    #+BEGIN_SRC python
    >>> 1 / 2
    0.5
    #+END_SRC
+
    #+BEGIN_SRC python
    >>> 1 // 2
    0
    #+END_SRC
+
    The double slash conistently perofrms integer division, even with floats:
+
    #+BEGIN_SRC python
    >>> 1.0 // 2.0
    0.0
    #+END_SRC
+
    The remainder(modulus) operator x % y gives the remainder of x divided by y,
    and it works just fine with floats as well
+
    #+BEGIN_SRC python
    >>> 2.75 % 0.5
    0.25
    #+END_SRC
+
    The exponentiation(or power)operator:
+
    #+BEGIN_SRC python
    >>> 2 ** 3
    8
@@ -57,10 +68,12 @@
    #+END_SRC
 
 ** Statements
+
    *Note:* In Python 3.0, *print* is a function, which means you need to
    write print(...) instead of print ...
 
 *** The IF statement
+
     #+BEGIN_SRC python
     >>> if 1 == 2: print 'One equals two'
     ...
@@ -68,6 +81,7 @@
     #+END_SRC
 
 ** Modules
+
    Modules is extensions that can be imported into Python to extend its
    capabilities. You import modules with a special command called(naturally
    enough) *import*.
@@ -75,6 +89,7 @@
    If you are sure that you won't import more than one function with a given name,
    you might not want to write the module name each time you call the function.
    Then you can use a variant of the *import* command:
+
    #+BEGIN_SRC python
    >>> from math import sqrt
    >>> sqrt(9)
@@ -82,7 +97,9 @@
    #+END_SRC
 
 ** cmath and Complex Numbers
+
    Complex number is covered by a different module, *cmath* (for complex math):
+
    #+BEGIN_SRC python
    >>> import cmath
    >>> cmath.sqrt(-1)
@@ -90,10 +107,12 @@
    #+END_SRC
 
 ** Back to the __future__
+
    From it, we can import features that will be standard in Python in the future
    but that aren’t part of the language yet.
 
 ** Making scripts behave like normal programs
+
    In UNIX, there is a standard way of doing this: have the first line of your
    script begin with the character sequence #! (called pound bang or shebang)
    followed by the absolute path to the program that interprets the script (in
@@ -130,18 +149,23 @@
    normal program.
 
 ** Comments
+
    The hash sign (#) is a bit special in Python. When you put it in your code,
    everything to the right of it is ignored (which is why the Python interpreter
    didn’t choke on the /usr/bin/env stuff used earlier). Here is an example:
+
    #+BEGIN_SRC python
    # Print the circumference of the circle:
    print 2 * pi * radius
    #+END_SRC
 
 ** Strings
+
 *** String Representations, repr and str
+
    *str* and *repr* simply converts a value into a string, for example, repr creates a
    string that is a representation of the value as a legal Python expressoion.
+
    #+BEGIN_SRC python
    >>> print repr("Hello, world!")
    'Hello, world!'
@@ -152,6 +176,7 @@
    >>> print str(10000L)
    10000
    #+END_SRC
+
    A synonym for repr(x) is `x`(here, you use backticks, not single quotes).
    *Note:* Backticks are removed in Python 3.0.
 
@@ -160,10 +185,12 @@
    the resulting string a legal Python expression.
 
 *** input vs. raw_input
+
    *input* assumes that what you enter is a valid Python expression(it's more or less the inverse
    of *repr*). For example, if you write your name as a string, that's no problem.
    However, it's just a bit too much to as that users write their name in quotes like that. Therefore
    we use *raw_input*,whick treats all input as raw data and puts it into a string.
+
    #+BEGIN_SRC python
    >>> input("Enter a number: ")
    Enter a number: 3
@@ -172,11 +199,14 @@
    Enter a number: 3
    '3'
    #+END_SRC
+
    *I just thought the numbers in Python are treated as expressions but strings are not, so the
    /raw_input/ is much more like input a string directly otherwise would be treated as a variable.*
 
 *** long strings, raw strings, and unicode
+
 **** long strings
+
      If you want to write a really long string, one that spans several lines, you can use triple
      quotes instead of ordinary quotes.
 
@@ -184,28 +214,37 @@
      Ordinary strings can span several lines only if  the last character on a line is a backslash.
 
 **** raw strings
+
      *Raw strings* is useful when you trying to input a long pathname, like this:
+
      #+BEGIN_SRC python
      path = 'C:\\Programm Files\\fnord\\foo\\bar\\baz\\frozz\\bozz'
      #+END_SRC
+
      which with lots of backslashes. Here is using raw string:
+
      #+BEGIN_SRC python
      path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz'
      #+END_SRC
+
      The last character in a raw string cannot be a backslash unless you escape it(and then the
      backslash you use to escape it will be part of the string, too). What if you want the last
      character in raw string to be a backslash?
+
      #+BEGIN_SRC python
      path = r'C:\Program Files\fnord\foo\bar\baz\frozz\bozz' '\\'
      #+END_SRC
 
 **** unicode strings
+
      #+BEGIN_SRC python
      u'hello, world'
      #+END_SRC
+
      *Note:* In Python 3.0, all strings will be Unicode strins.
 
 ** new functions by now
+
    |--------------------------+------------------------------------------------------------|
    | function                 | description                                                |
    |--------------------------+------------------------------------------------------------|
@@ -240,6 +279,7 @@
    | str(object)              | Converts a value to string                                 |
    |--------------------------+------------------------------------------------------------|
 * Lists and Tuples
+
    The most basic data structure in Python is the *sequence*. Each element of a
    sequence is assigned a number-its position, or /index/. The first index is
    zero, the second index is one, and so forth.
@@ -249,15 +289,19 @@
    which lies at the beginning, or 0.
 
 ** sequence overview
+
    Python has siz built-in types of sequences. They are *lists*, *tuples*,
    *strings*, *Unicode strings*, *buffer objects* and *xrange objects*.
 
    The main difference between lists and tuples is that you can change a list,
    but you can't change a tuple.
+
    #+BEGIN_SRC python
    >>> edward = ['Edward Gumby', 42]
    #+END_SRC
+
    Swquences can contain other sequences, too.
+
    #+BEGIN_SRC python
    >>> edward = ['Edward Gumby', 42]
    >>> john = ['Jhon Smith', 50]
@@ -267,6 +311,7 @@
    #+END_SRC
 
 *** common sequence operations
+
     These operations include /indexin/, /slicig/, /adding/, /multiplying/,
     /iteration/ and checking for /membership/. In addtion, Python has built-in
     functions for finding the length of a sequence, and for finding its largest
@@ -276,6 +321,7 @@
     per element in the sequence.
 
 **** indexing
+
      All elements in a sequence are numbered—from zero and upwards. You can access
      them individually with a number, just like an array.
 
@@ -284,17 +330,21 @@
      If a function call returns a sequence, you can index it directly. For instance,
      if you are simply interested in the fourth digit in a year entered by the user,
      you could do something like this:
+
      #+BEGIN_SRC python
      >>> fourth = raw_input('Year: ')[3]
      Year: 2005
      >>> fourth
      '5'
      #+END_SRC
+
      [[file:examples/indexing.py][Example]]
 
 **** slicing
+
      You can use /slicing/ to access ranges of elements. Do this by using /two/ indices,
      separated by a colon:
+
      #+BEGIN_SRC python
      >>> tag = '<a href="http://www.python.org">Python web site</a>'
      >>> tag[9:30]
@@ -302,10 +352,12 @@
      >>> tag[32:-4]
      'Python web site'
      #+END_SRC
+
      The /first/ index is the number of the first element you want to include. However,
      the /last/ index is the number of the first element /after/ your slice.
      In short, you supply two indices as limits for your slice, where the first is
      *inclusive* and the second is *exclusive*.
+
      #+BEGIN_SRC python
      >>> numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
      >>> numbers[3:6]
@@ -317,43 +369,55 @@
      >>> numbers[:]
      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
      #+END_SRC
+
      [[file:examples/slicing.py][Example]]
 
 ***** longer steps
+
       When slicing, you specify (either explicitly or implicitly) the start and end points
       of the slice. Another parameter which normally is left implicit, is the step length.
       In a regular slice, the step length is one, which means that the slice “moves” from
       one element to the next, returning all the elements between the start and end:
+
       #+BEGIN_SRC python
       >>> numbers[0:10:1]
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       >>> numbers[0:10:2]
       [1, 3, 5, 7, 9]
       #+END_SRC
+
       Still can use the shortcuts mentioned earlier.
+
       #+BEGIN_SRC python
       >>> numbers[::4]
       [1, 5, 9]
       #+END_SRC
+
       Naturally, the step size can't be zero, but it can be negative, which means extracting
       the elements form right to left:
+
       #+BEGIN_SRC python
       >>> numbers[8:3:-1]
       [9, 8, 7, 6, 5]
       #+END_SRC
 
 **** adding sequences
+
      Sequences can be concatenated with the addition(plus) operator:
+
      #+BEGIN_SRC python
      >>> 'Hello, ' + 'world!'
      'Hello, world!'
      #+END_SRC
+
      But, you can’t concatenate a list and a string, although both are sequences. In general,
      you cannot concatenate sequences of different types.
 
 **** multiplication
+
      Multiplying a sequence by a number x creates a new sequence where the original sequence is
      repeated x times:
+
      #+BEGIN_SRC python
      >>> 'python' * 5
      'pythonpythonpythonpythonpython'
@@ -362,20 +426,25 @@
      #+END_SRC
 
 ***** none, empty lists, and initialization
+
       An empty list is simply written as two brackets ([]) - there's nothing in it. None is a
       Python value and means exactly that—"nothing here". So if you want to initialize a list
       of length 10, you could do the following:
+
       #+BEGIN_SRC python
       >>> sequence = [None] * 10
       >>> sequence
       [None, None, None, None, None, None, None, None, None, None]
       #+END_SRC
+
       [[file:examples/sequence_multiplication.py][Example]]
 
 **** membership
+
      To check whether a value can be found in a sequence, you use the *in* operator.
      It checks whether something is true and returns a value accordingly: True for
      true and False for false.
+
      #+BEGIN_SRC python
      >>> permissions = 'rw'
      >>> 'w' in permissions
@@ -390,9 +459,11 @@
      >>> '$$$' in subject
      True
      #+END_SRC
+
      [[file:examples/sequence_membership.py][Example]]
 
 **** length, minimum, and maximum
+
      #+BEGIN_SRC python
      >>> numbers = [100, 34, 678]
      >>> len(numbers)
@@ -408,37 +479,47 @@
      #+END_SRC
 
 *** lists
+
     list are /mutable/ - that is, you can change their contents - and they have
     many useful specialized methods.
 
 **** function
+
      #+BEGIN_SRC python
      >>> list('Hello')
      ['H', 'e', 'l', 'l', 'o']
      #+END_SRC
+
      *list* works with all kinds of sequences, not just strings.
 
      *Tip:* To convert a list of characters such as the preceding code back to
      string, you would use the following expression:
+
      #+BEGIN_SRC python
      ''.join(somelist)
      #+END_SRC
+
      where some list is you list.
 
 **** basic operations
+
      You can perform all the standard sequence operations on lists.
 
 ***** changing lists: item assignments
+
       #+BEGIN_SRC python
       >>> x = [1, 1, 1]
       >>> x[1] = 2
       >>> x
       [1, 2, 1]
       #+END_SRC
+
       *Note:* You cannot assign to a postion that doesn't exist.
 
 ***** deleting elements
+
       You can simply use the *del* statement:
+
       #+BEGIN_SRC python
       >>> names = ['Alice', 'Beth', 'Cecil', 'Dee-Dee', 'Earl']
       >>> del names[2]
@@ -447,6 +528,7 @@
       #+END_SRC
 
 ***** assigning to slices
+
       #+BEGIN_SRC python
       >>> name = list('Perl')
       >>> name
@@ -455,15 +537,19 @@
       >>> name
       ['P', 'e', 'a', 'r']
       #+END_SRC
+
       You can assign to several positions at once.
+
       #+BEGIN_SRC python
       >>> name = list('Perl')
       >>> name[1:] = list('ython')
       >>> name
       ['P', 'y', 't', 'h', 'o', 'n']
       #+END_SRC
+
       Slice assignments can even be used to insert elements without replacing any of the
       original ones:
+
       #+BEGIN_SRC python
       >>> numbers = [1, 5]
       >>> numbers[1:1] = [2, 3, 4]
@@ -472,6 +558,7 @@
       #+END_SRC
 
 ***** list methods
+
       A method is a function that is tightly coupled to some object, be it a list, a number,
       a string, or whatever. In general, a method is called like this:
 
@@ -481,7 +568,9 @@
       method name, with a dot separating them.
 
 ****** append
+
        The *append* method is used to append an object to the end of a list:
+
        #+BEGIN_SRC python
        >>> lst = [1, 2, 3]
        >>> lst.append(4)
@@ -490,6 +579,7 @@
        #+END_SRC
 
 ****** count
+
        The *count* method counts the occurrences of an element in a list:
        #+BEGIN_SRC python
        >>> ['to', 'be', 'or', 'not', 'to', 'be'].count('to)
@@ -500,6 +590,7 @@
        #+END_SRC
 
 ****** extend
+
        The *extend* method allows you to append several values at once by supplying
        a sequence of the values you want to append. In other words, your original
        list has been extended by the other one:
@@ -526,8 +617,10 @@
        #+END_SRC
 
 ****** index
+
        The *index* method is used for searching lists to find the index of the first
        occurrence of a value:
+
        #+BEGIN_SRC python
        >>> knights = ['We', 'are', 'the', 'knights', 'who', 'say', 'ni']
        >>> knights.index('who')
@@ -535,6 +628,7 @@
        #+END_SRC
 
 ****** insert
+
        The *insert* method is used to insert an object into a list:
 
        #+BEGIN_SRC python
@@ -545,6 +639,7 @@
        #+END_SRC
 
 ****** pop
+
        The *pop* method removes an element(by default, the last one) from the list
        and returns it:
 
@@ -561,7 +656,9 @@
        #+END_SRC
 
 ****** remove
+
        The *remove* method is used to remove the first occurence of a value:
+
        #+BEGIN_SRC python
        >>> x = ['to', 'be', 'or', 'not', 'to', 'be']
        >>> x.remove('be')
@@ -570,7 +667,9 @@
        #+END_SRC
 
 ****** reverse
+
        The *reverse* method reverses the elements in the list.
+
        #+BEGIN_SRC python
        >>> x = [1, 2, 3]
        >>> x.reverse()
@@ -581,6 +680,7 @@
        *Tip:* If you want to iterate over a sequence in reverse, you can use the
        reversed function. This function doesn’t return a list, though; it returns
        an iterator. You can convert the returned object with list :
+
        #+BEGIN_SRC python
        >>> x = [1, 2, 3]
        >>> list(reversed(x))
@@ -588,6 +688,7 @@
        #+END_SRC
 
 ****** sort
+
        The *sort* method is used to sort lists in place. Sorting "in place" means
        changing the original list so its elements are in sorted order, rather than
        simply returning a sorted copy of the list:
@@ -652,6 +753,7 @@
        #+END_SRC
 
 *** tuples: immutables sequences
+
     Tuples are sequences, just like lists. The only difference is that tuples can’t be
     changed. (As you may have noticed, this is also true of strings.) The tuple syntax
     is simple—if you separate some values with commas, you automatically have a tuple:
@@ -662,6 +764,7 @@
     #+END_SRC
 
     tuples may also be (and often are) enclosed in parentheses:
+
     #+BEGIN_SRC python
     >>> (1, 2, 3)
     (1, 2, 3)
@@ -669,6 +772,7 @@
 
     This is a bit peculiar-you have to include a comma, even though there is
     only one value:
+
     #+BEGIN_SRC python
     >>> 42
     42
@@ -682,6 +786,7 @@
     tuple at all. The comma is crucial. Simply adding parentheses won’t help: (42)
     is exactly the same as 42. One lonely comma, however, can change the value of
     an expression completely:
+
     #+BEGIN_SRC python
     >>> 3*(40+2)
     126
@@ -690,6 +795,7 @@
     #+END_SRC
 
 **** function
+
      The tuple function works in pretty much the same way as list: it takes one sequence argument
      and converts it to a tuple. If the argument is already a tuple, it is returned unchanged:
 
@@ -703,6 +809,7 @@
      #+END_SRC
 
 ** new functions
+
    |---------------+-------------------------------------------------------|
    | function      | description                                           |
    |---------------+-------------------------------------------------------|
@@ -724,10 +831,13 @@
    |---------------+-------------------------------------------------------|
 
 * Strings
+
 ** basic operations
+
    All the standard sequence operations(indexing, slicing, multiplication,
    membership, length, minimum, and maximum) work with strings. Strings are
    immutable, so all kinds of item or slice assignments are illegal:
+
    #+BEGIN_SRC python
    >>> website = 'http://www.python.org'
    >>> website[-3:] = 'com'
@@ -738,9 +848,11 @@
    #+END_SRC
 
 ** string formatting: the short version
+
    String formatting uses the (aptly named) string formatting operator, the
    percent (%) sign. To the left of the %, you place a string (the format string);
    to the right of it, you place the value you want to format.
+
    #+BEGIN_SRC python
    >>> format = "Hello, %s. %s enough for ya?"
    >>> values = ('world', 'Hot')
@@ -756,6 +868,7 @@
    places where the values are to be inserted.
 
 *** template strings
+
     The string module offers another way of formatting values: template strings. They
     work more like variable substitution in many UNIX shells, with $foo being replaced
     by a keyword argument called foo, which is passed to the template method substitute:
@@ -799,7 +912,9 @@
     missing values or incorrect uses of the $ character.
 
 ** string formatting: the long version
+
 *** conversion specifier
+
     A basic conversion specifier consists of the items that follow. Note that the order
     of these items is crucial.
 
@@ -848,6 +963,7 @@
     |-----------------+------------------------------------------------------------------------------|
 
 *** signs, alignment, and zero-padding
+
     Before the width and precision numbers, you may put a "flag", which may be either
     zero, plus, minus, or blank. A zero means that the number will be zero-padded:
 
@@ -886,7 +1002,9 @@
     prices, where the user enters the total width of the table. [[file:./examples/string_fromatting.py][Example]]
 
 *** string methods
+
 **** find
+
      The *find* method finds a substring within a larger string. Ite returns
      the leftmost index where the substring is found. If it is /not/ found,
      -1 is returned:
@@ -939,6 +1057,7 @@
      *join into is much proper*
 
 **** lower
+
      The *lower* method returns a lowercase version of the string:
 
      #+BEGIN_SRC python
@@ -947,6 +1066,7 @@
      #+END_SRC
 
 ***** title casing
+
       One relative of *lower* is the *title* method, which title cases a string - that
       is, all words start with uppercase characters, and all other characters are
       lowercased.
@@ -965,6 +1085,7 @@
       #+END_SRC
 
 **** replace
+
      The *replace* method returns a string where all the occurrences of one
      string have been replaced by another:
 
@@ -974,6 +1095,7 @@
      #+END_SRC
 
 **** split
+
      A very important string method, *split* is the inverse of *join*, and is used
      to *split* a string into a sequence:
 
@@ -992,6 +1114,7 @@
      *split by is much proper*
 
 **** strip
+
      The *strip* method returns a string where whitespace on the left and right (but
      not internally) has been stripped (removed):
 
@@ -1001,6 +1124,7 @@
      #+END_SRC
 
 **** translate
+
      Similar to *replace*, *translate* replaces parts of a string, but unlike *replace*,
      *translate* works only with single characters. Its strength lies in that it can
      perform several replacements simultaneously, and can do so more efficiently than
@@ -1042,6 +1166,7 @@
      #+END_SRC
 
 *** new function
+
     |----------------------------+-------------------------------------------------------------------------------------|
     | function                   | description                                                                         |
     |----------------------------+-------------------------------------------------------------------------------------|
@@ -1051,7 +1176,9 @@
     |----------------------------+-------------------------------------------------------------------------------------|
 
 * Dictionaries
+
 ** creating and using dictionaries
+
    Dictionaries consist of pairs (called /items/) of /keys/ and their corresponding
    /values./ Each key is separated form its value by a colon(:), the items are seperated
    by commas, and the whole thing is enclosed in curly braces. An empty dictionary
@@ -1061,6 +1188,7 @@
    do not need to be unique within a dictionary.
 
 ** the *dict* function
+
    You can use the *dict* function to construct dictionaries from other mappings or from
    sequences of (key, value) pairs:
 
@@ -1082,6 +1210,7 @@
    #+END_SRC
 
 ** basic dictionary operations
+
    * *len(d)*  returns the number of items (key-value pairs) in *d*.
    * *d[k]* returns the value associated with the key *k*.
    * *d[k] = v* associates the value *v* with the key *k*.
@@ -1105,6 +1234,7 @@
    [[file:./examples/dictionary.py][Dictionary Example]]
 
 ** string formatting with dictionaries
+
    If you use a dictionary(with only string and keys) instead of a tuple, you can maek
    the string formatting even snazzier. After the % character in each conversion specifier,
    you add a key(enclosed in parentheses), which is followed by the other specifier elements:
@@ -1136,7 +1266,9 @@
    #+END_SRC
 
 ** methods
+
 *** clear
+
     The *clear* method removes all items from the dictionary. This is an in-place
     operation(like *list.sort*), so it returns nothing(or, rather, *None*):
 
@@ -1154,6 +1286,7 @@
     #+END_SRC
 
 *** copy
+
     The *copy* method returns a new dictonary with the same key-value pairs(a shallow
     copy, since the values themselves are the /same/, not copies):
 
@@ -1190,6 +1323,7 @@
     #+END_SRC
 
 *** fromkeys
+
     The *fromkeys* method creates a new dictionary with the given keys, each with a
     default corresponding value of *None*:
 
@@ -1213,6 +1347,7 @@
     #+END_SRC
 
 *** get
+
     The *get* method is a forgiving way of a accessing dictionary items. Ordinarily,
     when you try to access an item that is not present in the dictionary, things go
     very wrong:
@@ -1252,6 +1387,7 @@
     [[file:./examples/dictionary_method.py][Dictionary Method Example]]
 
 *** has_key
+
     The *has_key* method checks whether a dictionary has a given key. The
     expression *d.has_key(k)* is euivalent to *k in d*.
 
@@ -1265,6 +1401,7 @@
     #+END_SRC
 
 *** items and iteritems
+
     The *items* method returns all the items of the dictionary as a list of
     items in which each item is of the form(key, value). The items are not
     returnd in any particular order:
@@ -1287,10 +1424,12 @@
     #+END_SRC
 
 *** keys and iterkeys
+
     The *keys* method returns a list of the keys in the dictionary, while *iterkeys*
     returns an iterator over the keys.
 
 *** pop
+
     The *pop* method can be used to get the value corresponding to a given key, and
     then remove the key-value pair from the dictionary:
 
@@ -1303,6 +1442,7 @@
     #+END_SRC
 
 *** popitem
+
     The *popitem* method is similar to *list.pop*, which pops off the last
     element of a list. Unlike *list.pop*, however *popitem* pops off an arbirary
     item because dictionaries don't have a "last element" or any order whatsoever.
@@ -1322,6 +1462,7 @@
     equivalent of *append* (which adds an element to the end of a list).
 
 *** setdefault
+
     The *setdefault* method is somewhat similar to *get*, in that it retrives a valve
     associated with a given key. In addition to the *get* functionality, *setdefault*
     /sets/ the value corresponding to the given key if it is not already in the
@@ -1346,6 +1487,7 @@
     out, None is used.
 
 *** update
+
     The *update* method updates one dictionary with the items of another:
 
     #+BEGIN_SRC python
@@ -1367,6 +1509,7 @@
     arguments.
 
 *** values and itervalues
+
     The *values* method returns a list of the values in the dictionary(and *itervalues*
     returns an iterator of the values). Unlike *keys*, the list returned by *values* may
     contain duplicates:
@@ -1382,6 +1525,7 @@
     #+END_SRC
 
 ** new functions
+
    |-----------+----------------------------------------------------------------------------|
    | function  | description                                                                |
    |-----------+----------------------------------------------------------------------------|
@@ -1389,7 +1533,9 @@
    |-----------+----------------------------------------------------------------------------|
 
 * Conditionals, Loops, and some other statements
+
 ** printing with commas
+
    You can actually print more than one expression, as long as you separate
    them with commas:
 
@@ -1401,6 +1547,7 @@
    As you can see, a space character is inserted between each argument.
    *Note:* The arguments of *print* do /not/ form a tuple, as one might
    expect:
+
    #+BEGIN_SRC python
    >>> 1, 2, 3
    (1, 2, 3)
@@ -1419,6 +1566,7 @@
    #+END_SRC
 
 ** importing something as something else
+
    Usually, when you import something from a module, you either use
 
    #+BEGIN_SRC python
@@ -1470,7 +1618,9 @@
    #+END_SRC
 
 ** assignment magic
+
 *** sequence unpacking
+
    You can perform several different assignments /simultaneously/:
 
    #+BEGIN_SRC python
@@ -1522,6 +1672,7 @@
    this case, *reset* will be [3, 4].
 
 *** chained assignments
+
     Chained assignments are used as a shortcut when you want to bind several variables
     to the same value. This may seem a bit like the simultaneous assignments, except
     that here you are dealing with only one value:
@@ -1538,6 +1689,7 @@
     #+END_SRC
 
 *** augemented assignments
+
     #+BEGIN_SRC python
     >>> x = 2
     >>> x += 1
@@ -1547,6 +1699,7 @@
     #+END_SRC
 
 ** blocks
+
    A block is a group of statements that can be executed if a condition is true
    (conditional statements), or executed several times (loops), and so on. A
    block is created by indenting a part of your code; that is, putting spaces in
@@ -1564,7 +1717,9 @@
    of indentation as some enclosing block, you know that the current block has ended.
 
 ** conditions and conditional statements
+
 *** boolean values
+
     The following values are considered by the interpreter to mean false when
     evaluated as a Boolean expression (for example, as the condition of an if
     statement):
@@ -1572,10 +1727,12 @@
     False    None    0    ""    ()    []    {}
 
 *** conditional execution and the *if* statement
+
     There is a tiny difference compared with other languages, the
     *else if* in other language is *elif* in pyhon.
 
 **** comparison operators
+
      |------------+--------------------------------------|
      | expression | description                          |
      |------------+--------------------------------------|
@@ -1608,6 +1765,7 @@
      *is* tests for *identity*, rather than *equality*.
 
 *** assertions
+
     There is a useful relative of the if statement, which works more or less like this
     (pseudocode):
 
@@ -1642,10 +1800,13 @@
     #+END_SRC
 
 *** loops
+
 **** *while* loop
+
      nothing unique compared with other languages.
 
 **** *for* loop
+
      *in* is a useful expression:
 
      #+BEGIN_SRC python
@@ -1670,6 +1831,7 @@
      #+END_SRC
 
 **** iterating over dictionaries
+
      #+BEGIN_SRC python
      d = {'x': 1, 'y': 2, 'z': 3}
      for key in d:
@@ -1677,7 +1839,9 @@
      #+END_SRC
 
 **** iteration utilities
+
 ***** parallel iteration
+
       Sometimes you want to iterate over two sequences at the same time.
       Let’s say that you have the following two lists:
 
@@ -1712,6 +1876,7 @@
       #+END_SRC
 
 ***** numbered iteration
+
       In some cases, you want to iterate over a sequence of objects and at the same
       time have access to the index of the current object.
 
@@ -1745,6 +1910,7 @@
       supplied automatically.
 
 ***** reversed and sorted iteration
+
       *reversed* and *sorted*, they're similar to the list methods *reverse* and *sort*,
       but they work on any sequence or iterable object, and instead of modifying the
       object in place, they return reversed and sorted versions:
@@ -1761,15 +1927,19 @@
       #+END_SRC
 
 **** breaking out of loops
+
 ***** break
+
       To end (break out of) a loop, you use *break*.
 
 ***** continue
+
       The continue statement is used less often than break. It causes the
       current iteration to end, and to “jump” to the beginning of the next. It
       basically means “skip the rest of the loop body, but don’t end the loop.”
 
 *** list comprehension
+
     List comprehension is a way of making lists from other lists. It works in a
     way similar to for loops and is actually quite simple:
 
@@ -1786,7 +1956,9 @@
     #+END_SRC
 
 *** *pass*, *del*, and *exec*
+
 **** pass
+
     Sometimes you need to do nothing. This may not be very often, but when it
     happens, it’s good to know that you have the pass statement:
 
@@ -1823,12 +1995,15 @@
     #+END_SRC
 
 **** del
+
      *del* just delete the /name/, itself(the value). In fact, there is no way to
      delete values in Python -- and you don't realyy need to, because the Python
      interpreter does it by itself whenever you don't use the value anymore.
 
 **** exec and eval
+
 ***** exec
+
      The statement for executing a string is exec:
 
      #+BEGIN_SRC python
@@ -1871,6 +2046,7 @@
      #+END_SRC
 
 ***** eval
+
       A built-in function that is similar to exec is eval (for “evaluate”). Just
       as exec executes a series of Python statements, eval evaluates a Python
       expression (written in a string) and returns the resulting value. (exec
@@ -1884,6 +2060,7 @@
       #+END_SRC
 
 *** new function
+
     |--------------------------------------+--------------------------------------------------------------------------|
     | function                             | description                                                              |
     |--------------------------------------+--------------------------------------------------------------------------|
@@ -1906,14 +2083,18 @@
     |--------------------------------------+--------------------------------------------------------------------------|
 
 * Abstraction
+
 ** creating functions
+
    Define a function with the *def* (or "function definition") statement:
 
    #+BEGIN_SRC python
    def hello(name):
        return 'Hello, ' + name + '!'
    #+END_SRC
+
 ** documenting functions
+
    If you want to document your functions so that you’re certain that others will
    understand them later on, you can add comments (beginning with the hash sign, #).
 
@@ -1951,6 +2132,7 @@
    #+END_SRC
 
 ** patameters
+
    *Note:* Parameters are kept in what is called a *local scope*.
 
    Strings (and numbers and tuples) are immutable, which means that you can’t modify
@@ -2011,6 +2193,7 @@
    #+END_SRC
 
 *** collecting parameters
+
     Sometimes it can be useful to allow the user to supply any number of parameters.
     For example, you can store only one name at a time. It would be nice to be able
     to store more names, like this:
@@ -2076,6 +2259,7 @@
     #+END_SRC
 
 *** reversing the process
+
     Let's say you have with two numbers that you want to add:
 
     #+BEGIN_SRC python
@@ -2125,6 +2309,7 @@
     This can be particularly useful when calling the constructor of a superclass.
 
 ** scoping
+
    There is a built-in function called *vars*, which returns the dictionary that
    contains variavles and its values.
 
@@ -2242,6 +2427,7 @@
    and lets you assign to variables in outer (but non-global) scopes.
 
 ** recursion
+
    A similar function definition would be
 
    #+BEGIN_SRC python
@@ -2257,6 +2443,7 @@
    problem
 
 ** new function
+
     |-------------------------------+-----------------------------------------------------------------|
     | map(func, seq [, seq, ...])   | Applies the function to all the elements in the sequences       |
     |-------------------------------+-----------------------------------------------------------------|
@@ -2306,6 +2493,7 @@
     enavles you to use the object without worrying about how it's constructed.
 
 ** inheritance
+
     Inheritance is another way of dealing with laziness (in the positive sense).
     Porgrammers want to avoid typing the same code more than once. We avoided that
     earlier by making functions.
@@ -2468,3 +2656,170 @@
      (from module import *).
 
 *** the class namespace
+
+    All the code in the class statement is executed in a special namespace—the
+    class namespace. This namespace is accessible later by all members of the class.
+
+*** specifying a superclass
+
+    You indicate the superclass in a class statement by writing it in parentheses after
+    the class name:
+
+    #+BEGIN_SRC python
+    class Filter:
+        def init(self):
+            self.blocked = []
+        def filter(self, sequence):
+            return [x for x in sequence if x not in self.blocked]
+
+    class SPAMFilter(Filter): # SPAMFilter is a subclass of Filter
+        def init(self): # Overrides init method from Filter superclass
+            self.blocked = ['SPAM']
+    #+END_SRC
+
+**** investigating inheritance
+
+     If you want to find out whether a class is a subclass of another, you can use
+     the built-in method *issubclass:*
+
+     #+BEGIN_SRC python
+     >>> issubclass(SPAMFilter, Filter)
+     True
+     >>> issubclass(Filter, SPAMFilter)
+     False
+     #+END_SRC
+
+     If you have a class and want to know its base classed, you can access its special
+     attribute *__bases__*:
+
+     #+BEGIN_SRC python
+     >>> SPAMFilter.__bases__
+     (<class __main__.Filter at 0x171e40>,)
+     >>> Filter.__bases__
+     ()
+     #+END_SRC
+
+     In a similar manner, you can check whether an object is an instance of a class by
+     using isinstance:
+
+     #+BEGIN_SRC python
+     >>> s = SPAMFilter()
+     >>> isinstance(s, SPAMFilter)
+     True
+     >>> isinstance(s, Filter)
+     True
+     >>> isinstance(s, str)
+     False
+     #+END_SRC
+
+     *Note* Using *isinstance* is usually not good practice. Relying on polymorphism is
+     almost always better.
+
+**** multiple superclass
+
+     #+BEGIN_SRC python
+     class Calculator:
+         def calculate(self, expression):
+             self.value = eval(expression)
+     class Talker:
+         def talk(self):
+             print 'Hi, my value is', self.value
+     class TalkingCalculator(Calculator, Talker):
+         pass
+     #+END_SRC
+
+     If you are using multiple inheritance, there is one thing you should look out for:
+     if a method is implemented differently by two or more of the superclasses (that is,
+     you have two different methods with the same name), you must be careful about the
+     order of these superclasses (in the class statement). The methods in the earlier
+     classes override the methods in the later ones.
+
+**** interfaces and introspection
+
+     The “interface” concept is related to polymorphism. When you handle a polymorphic
+     object, you only care about its interface (or “protocol”)—the methods and attributes
+     known to the world.
+     In Python, you don’t explicitly specify which methods an object needs to have to be
+     acceptable as a parameter. For example, you don’t write interfaces explicitly (as
+     you do in Java); you just assume that an object can do what you ask it to do. If it
+     can’t, the program will fail.
+
+     Usually, you simply require that objects conform to a certain interface (in other
+     words,implement certain methods), but if you want to, you can be quite flexible in
+     your demands.Instead of just calling the methods and hoping for the best, you can
+     check whether the required methods are present, and if not, perhaps do something else:
+
+     #+BEGIN_SRC python
+     >>> hasattr(tc, 'talk')
+     True
+     >>> hasattr(tc, 'fnord')
+     False
+     #+END_SRC
+
+     In the preceding code, you find that tc (a TalkingCalculator, as described
+     earlier in this chapter) has the attribute talk (which refers to a method),
+     but not the attribute fnord. If you wanted to, you could even check whether
+     the talk attribute was callable:
+
+     #+BEGIN_SRC python
+     >>> callable(getattr(tc, 'talk', None))
+     True
+     >>> callable(getattr(tc, 'fnord', None))
+     False
+     #+END_SRC
+
+     *Note:* The function callable is no longer available in Python 3.0. Instead of
+     callable(x) , you can use *hasattr(x, '__call__')*.
+
+** thoughts on OOD
+
+   • Gather what belongs together. If a function manipulates a global variable, the two of
+   them might be better off in a class, as an attribute and a method.
+
+   • Don’t let objects become too intimate. Methods should mainly be concerned with the
+   attributes of their own instance. Let other instances manage their own state.
+
+   • Go easy on the inheritance, especially multiple inheritance. Inheritance is useful at
+   times, but can make things unnecessarily complex in some cases. And multiple inherit-
+   ance can be very difficult to get right and even harder to debug.
+
+   • Keep it simple. Keep your methods small. As a rule of thumb, it should be possible to
+   read (and understand) most of your methods in, say, 30 seconds. For the rest, try to keep
+   them shorter than one page or screen.
+
+   When determining which classes you need and which methods they should have, you may
+   try something like this:
+
+   1. Write down a description of your problem (what should the program do?). Underline all
+   the nouns, verbs, and adjectives.
+
+   1. Go through the nouns, looking for potential classes.
+
+   2. Go through the verbs, looking for potential methods.
+
+   3. Go through the adjectives, looking for potential attributes.
+
+   4. Allocate methods and attributes to your classes.
+
+** new function
+   |----------------------------------+-----------------------------------------------------------------------|
+   | function                         | description                                                           |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | callable(object)                 | Determines if the object is callable (such as a function or a method) |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | getattr(object, name[, default]) | Gets the value of an attribute, optionally providing a default        |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | hasattr(object, name)            | Determines if the object has the given attribute                      |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | isinstance(object, class)        | Determines if the object is an instance of the class                  |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | issubclass(A, B)                 | Determines if A is a subclass of B                                    |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | random.choice(sequence)          | Chooses a random element from a nonempty sequence                     |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | setattr(object, name, value)     | Sets the given attribute of the object to value                       |
+   |----------------------------------+-----------------------------------------------------------------------|
+   | type(object)                     | Returns the type of the object                                        |
+   |----------------------------------+-----------------------------------------------------------------------|
+
+* Exceptions
