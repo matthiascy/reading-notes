@@ -2268,3 +2268,203 @@
     |-------------------------------+-----------------------------------------------------------------|
     | apply(func[, args[, kwargs]]) | Calls the function, optionally supplying argument               |
     |-------------------------------+-----------------------------------------------------------------|
+
+* More Abstraction
+
+** The Magic of Objects
+
+   Some of the most important benefits of objects include the following:
+
+   • *Polymorphism*: You can use the same operations on objects of different classes, and
+   they will work as if “by magic.”
+
+   • *Encapsulation*: You hide unimportant details of how objects work from the outside
+   world.
+
+   • *Inheritance*: You can create specialized classes of objects from general ones.
+
+** polymorphism and methods
+
+   The term /polymorphism/ is derived from a Greek word meaning "having mutliple forms."
+   Basically, that means that even if you don't konw what kind of bject a variable refers
+   to, you may still be able to perform operations on it that will work differently depending
+   on teh type (or class) of the object.
+
+*** polymorphism comes in many forms
+
+    Plymorphism is at work every time you can "do something" to an object without having
+    to know exactly what kind of object it is.
+
+** encapsulation
+
+    /Encapsulation/ is the principle of hiding unnecessary details from the rest of the
+    world. This may sound like polymorphism -- there, too, you use an object without
+    knowing its inner details. The two concepts are similar because they are both
+    /principles of abstraction/.
+    But encapsulation isn't the same as polymorphism. Polymorphism enables you to call
+    the methods of an object without konwing its class(type of object). Encapsulation
+    enavles you to use the object without worrying about how it's constructed.
+
+** inheritance
+    Inheritance is another way of dealing with laziness (in the positive sense).
+    Porgrammers want to avoid typing the same code more than once. We avoided that
+    earlier by making functions.
+
+** classes and types
+
+   *Note:* In everyday speech, we denote classes of objects with plural nouns such
+   as “birds” and “larks.” In Python, it is customary to use singular, capitalized
+   nouns such as Bird and Lark .
+
+*** making classes
+
+    Here is an example:
+
+    #+BEGIN_SRC python
+    __metclass__ = type # Make sure we get new style classes
+    class Person:
+
+        def setName(self, name):
+            self.name = name
+
+        def getName(self):
+            return self.name
+
+        def greet(self):
+            print "Hello, world! I am %s." % self.name
+    #+END_SRC
+
+   *Note：* There is a difference between so-called old-style and new-style classes.
+   There is really no reason to use the old-style classes anymore, except that they’re
+   what you get by default in Python versions prior to 3.0. To get new-style classes,
+   you should place the assignment __metaclass__ = type at the beginning of your script
+   or module. (I may not explicitly include this statement in every example.) There are
+   also other solutions, such as subclassing a new-style class (for example, object ).
+   You learn more about subclassing in a minute. In Python 3.0, there is no need to worry
+   about this, as old-style classes don’t exist there.
+
+   #+BEGIN_SRC python
+   >>> foo = Person()
+   >>> bar = Person()
+   >>> foo.setName('Luke Skywalker')
+   >>> bar.setName('Anakin Skywalker')
+   >>> foo.greet()
+   Hello, world! I am Luke Skywalker.
+   >>> bar.greet()
+   Hello, world! I am Anakin Skywalker.
+   #+END_SRC
+
+   The *self* is always the object itself. Without it, none of the methods would have
+   access to the object itself -- the object whose attributes they are supposed to
+   manipulate. As before, the attributes are also accessible from the outside:
+
+   #+BEGIN_SRC python
+   >>> foo.name
+   'Luke Skywlader'
+   >>> bar.name = 'Yoda'
+   >>> bar.greet()
+   Hello, world! I am Yoda.
+   #+END_SRC
+
+   *Tip:* Another way of viewing this is that foo.greet() is simply a convenient way of
+   writing *Person.greet(foo)* , if you know that foo is an instance of *Person*.
+
+**** attributes, functions, and methods
+
+     The *self* parameter is, in fact, what distinguishes methods from the functions.
+     Methods(or, more technically, /bound methods/) have their first parameter
+     bound to the instance they belong to, so you don't have to supply it.
+     While you can certainly bind an attribute to a plain function, it won’t have that
+     special *self* parameter:
+
+     #+BEGIN_SRC python
+     >>> class Class:
+         def method(self):
+             print 'I have a self!'
+
+     >>> def function():
+             print "I don't..."
+
+     >>> instance = Class()
+     >>> instance.method()
+     I have a self!
+     >>> instance.method = function
+     >>> instance.method()
+     I don't...
+     #+END_SRC
+
+     You’re free to use another variable that refers to the same method:
+
+     #+BEGIN_SRC python
+     >>> class Bird:
+         song = 'Squaawk!'
+         def sing(self):
+             print self.song
+     >>> bird = Bird()
+     >>> bird.sing()
+     Squaawk!
+     >>> birdsong = bird.sing
+     >>> birdsong()
+     Squaawk!
+     #+END_SRC
+
+**** privacy revisited
+
+     By default, you can access the attributes of an object from the "outside".
+     To make a method or attribute private (inaccessible from the outside), simply
+     start its name with two underscores:
+
+     #+BEGIN_SRC python
+
+     class Secretive:
+         def __inaccessible(self):
+             print "Bet you can't see me..."
+         def accessible(self):
+             print "The secret messge is:"
+             self.__inaccessible()
+
+     #+END_SRC
+
+     Now __inaccessible is inaccessible to the outside world, while it can still be
+     used inside the class.
+
+     #+BEGIN_SRC python
+     >>> s = Secretive()
+     >>> s.__inaccessible()
+     Traceback (most recent call last):
+       File "<pyshell#112>", line 1, in ?
+         s.__inaccessible()
+     AttributeError: Secretive instance has no attribute '__inaccessible'
+     >>> s.accessible()
+     The secret message is:
+     Bet you can't see me...
+     #+END_SRC
+
+     Although the double underscores are a bit strange, this seems like a standard
+     private method, as found in other languages. What’s not so standard is what
+     actually happens. Inside a class definition, all names beginning with a double
+     underscore are “translated” by adding a single underscore and the class name
+     to the beginning:
+
+     #+BEGIN_SRC python
+     >>> Secretive._Secretive__inaccessible
+     <unbound method Secretive.__inaccessible>
+     #+END_SRC
+
+     If you know how this works behind the scenes, it is still possible to access private
+     methods outside the class, even though you’re not supposed to:
+
+     #+BEGIN_SRC python
+     >>> s._Secretive__inaccessible()
+     Bet you can't see me...
+     #+END_SRC
+
+     So, in short, you can’t be sure that others won’t access the methods and attributes
+     of your objects, but this sort of name-mangling is a pretty strong signal that they
+     shouldn’t.If you don’t want the name-mangling effect, but you still want to send a
+     signal for other objects to stay away, you can use a single initial underscore.
+     This is mostly just a convention, but has some practical effects. For example,
+     names with an initial underscore aren’t imported with starred imports
+     (from module import *).
+
+*** the class namespace
