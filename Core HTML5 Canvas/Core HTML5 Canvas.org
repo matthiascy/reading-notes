@@ -1,12 +1,92 @@
 #+TITLE: Core HTML5 Canvas: Graphics,Animation,and Game Development
+#+AUTHOR: Chen Yang(Matthias)
+#+EMAIL: matthias_cy@outlook.com
+#+STARTUP: indent
 * 基础知识
+
 ** canvas元素
+
    canvas的能力是通过Canvas的context对象表现出来的。该环境变量可以从canvas元素身上获取。
+
    #+BEGIN_SRC javascript
    var canvas = document.getElementById("canvas");
    var context = canvas.getContext("2d");
    #+END_SRC
+
    在开发基于Canvas的应用程序是也可以这样做：
    1.使用document.getElementById()方法来获取指向canvas的引用。
    2.在canvas对象上调用getContext("2d")方法，获取环境变量（“2d”中的“d”必须小写）。
    3.使用绘图环境对象在canvas元素上进行绘制。
+
+   #+INCLUDE: "./examples/html/SimpleCanvasExample.html" src html
+
+   #+INCLUDE: "./examples/js/SimpleCanvasExample.js" src javascript
+
+   #+BEGIN_CENTER
+   警告： 在设置canvas的宽度与高度时，不能使用px后缀
+   提示： 默认的canvas元素大小是300x150个屏幕像素
+   #+END_CENTER
+
+*** canvas大小与绘图表面的大小
+
+可以通过CSS来设置，也可以通过标签width，height来设置，但并不一样：
+当设置元素的width与height属性时，实际上是同时修改了该元素额本身的大小与元素绘图表
+面（drawing surface）的大小。然而，如果是通过CSS来设定canvas元素的大小，那么只
+会改变元素本身的大小，而不会影响到绘图表面。
+当canvas元素的大小不符合其绘图表面的大小时，浏览器就会对绘图表面进行缩放，使其符合
+元素的大小。
+
+*** canvas元素的API
+
+它值提供了两个属性（width，height）与三个方法
+| attribute                       |
+|---------------------------------|
+| getContext()                    |
+| toDataURL(type, qaulity)        |
+| toBlob(callback, type, args...) |
+
+** Canvas绘图环境
+
+*** 2d绘图环境与3d绘图环境
+
+在JavaScript代码中，很少会用到canvas元素本身，可以通过canvas元素来获取指向
+canvas绘图环境对象的引用。
+与2d绘图环境对应的3d绘图环境叫做WebGL，它完全符合OpenGL ES2.0 的API。
+
+*** Canvas状态的保存与恢复
+
+Canvas的API提供了两个名叫save()和restore()的方法，用于保存及恢复当前canvas
+绘图环境的所有属性
+
+#+BEGIN_SRC javascript
+function drawGrid(strokeStyle, fillStyle) {
+  controlContext.save(); // save the context on a stack
+  controlContext.fillStyle = fillStyle;
+  controlContext.strokeStyle = strokeStyle;
+
+  // draw the grid...
+
+  controlContext.restore(); // restore the context from the stack
+}
+#+END_SRC
+
+**  HTML5
+相关的三个规范：
++ HTML5 Canvas
++ Timing control for script-based animation
++ HTML 5 video and audio
+
+由于历史原因，存在两个几乎完全一样的Canvas规范。[[http://www.w3.org/html/wg/drafts/html/master/semantics.html#the-canvas-element][W3C]] 和 [[https://html.spec.whatwg.org/multipage/scripting.html#the-canvas-element][WHATWG]]。
+对于性能要求很高的动画，应该使用window.requestAnimationFrame()，[[http://www.w3.org/TR/animation-timing][规范]]
+HTML5视频与音频元素的标准。[[http://www.w3.org/standards/webdesign/audiovideo][规范]]
+
+*** 性能
++ 性能分析器（Profiler）
++ 时间轴工具（Timeline）
++ jsPerf（可以让你创建并分享JavaScript性能测试）
+岁的发动
+
+** 基本绘制
+Analog Clock
+
+#+INCLUDE:"../examples/html/analogClock.html"
