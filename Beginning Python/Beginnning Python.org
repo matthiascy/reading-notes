@@ -3256,19 +3256,403 @@
     • If the index of a sequence is of the right type, but outside the allowed
     range, an IndexError should be raised.
 
-    Let's have a go at it -- let's see if we can create an infinite sequence:
+** properties
+
+   Accessors are simply methods with names such as getHeight and setHeight, and
+   are used to retrieve or rebind some attribute (which may be private to the class).
+   Encapsulating state variables (attributes) like this can be important if
+   certain actions must be taken when accessing the given attribute. For example,
+   consider the following Rectangle class:
+
+   #+BEGIN_SRC python
+   class Rectangle:
+       def __init__(self):
+           self.width = 0
+           self.height = 0
+       def setSize(self, size):
+           self.width, self.height = size
+       def getSize(self):
+           return self.width, self.height
+
+   >>> r = Rectangle()
+   >>> r.width = 10
+   >>> r.height = 5
+   >>> r.getSize()
+   (10, 5)
+   >>> r.setSize((150, 100))
+   >>> r.width
+   150
+   #+END_SRC
+
+   If you have lots of attributes, should you wrap all in accessors? That is a
+   possibility, of course. However, it would be impractical(and kind of silly),
+   luckily, Python can hide your accessors for you, making all of your attributes
+   look alike. Those attribute that are defined through their accessors are often
+   called /properites/.
+
+*** the property function
 
     #+BEGIN_SRC python
-    def checkIndex(key):
-        """
-        Is the given key an acceptable index?
+    __metclass__ = type
 
-        To be acceptable, the key should be a non-negative integer. If it is not
-        an integer, a TypeError is raised; if it is negative, an IndexError is
-        raised (since the sequence is of infinite length).
-        """
+    class Rectangle:
+        def __init__(self):
+            self.width = 0
+            self.height = 0
+        def setSize(self, size):
+            self.width, self.height = size
+        def getSize(self):
+            return self.width, self,height
+        size = property(getSize, setSize)
+    #+END_SRC
 
-        if not isinstance(key, (int, long)): raise TypeError
-        if key < 0: raise IndexError
+    In this new version of Rectangle, a property is created with the property
+    function with the accessor functions as arguments (the getter first, then
+    the setter), and the name size is then bound to this property. After this,
+    you no longer need to worry about how things are implemented, but can treat
+    width, height, and size the same way:
+
+    #+BEGIN_SRC python
+    >>> r = Rectange()
+    >>> r.width = 10
+    >>> r.height = 5
+    >>> r.size
+    (10, 5)
+    >>> r.size = 150, 100
+    >>> r.width
+    150
+    #+END_SRC
+
+    In fact, the property function may be called with zero, one, three, or four
+    arguments as well. If called without any arguments, the resulting property
+    is neither readable nor writable.If called with only one argument (a getter
+    method), the property is readable only. The third (optional) argument is a
+    method used to delete the attribute (it takes no arguments). The fourth
+    (optional) argument is a docstring. The parameters are called fget, fset,
+    fdel, and doc—you can use them as keyword arguments if you want a property
+    that, say, is only writable and has a docstring.
+
+** static methods and class methods
+
+   Static methods and class methods are created by wrapping methods in objects
+   of the *staticmethod* and *classmethod* types, respectively. Static methods
+   are defined without self arguments, and they can be called directly on the
+   class itself. Class methods are defined with a self-like parameter normally
+   called *cls*. You can call class methods directly on the class object too,
+   but the cls parameter then automatically is bound to the class.
+
+   #+BEGIN_SRC python
+   __metclass__ = type
+
+   class MyClass:
+       def smeth():
+           print 'This is a static method'
+       smeth = staticmethod(smeth)
+
+       def cmeth(cls):
+           print 'This is a class method of', cls
+       cmeth = classmethod(cmeth)
+   #+END_SRC
+
+   The technique of wrapping and replacing the methods manually like this is a
+   bit tedious. In Python 2.4, a new syntax was introduced for wrapping methods
+   like this, called /decorators/. (They actually work with any callable objects
+   as wrappers, and can be used on both methods and functions.) You specify one
+   or more decorators (which are applied in reverse order) by listing them above
+   the method (or function), using the @ operator:
+
+   #+BEGIN_SRC python
+   __metaclass__ = type
+
+   class MyClass:
+       @staticmethod
+       def smeth():
+           print 'This is a static method'
+
+       @classmethod
+       def cmeth(cls):
+           print 'This is a class method of', cls
+   #+END_SRC
+
+   Once you’ve defined these methods, they can be used like this (that is, without
+   instantiating the class):
+
+   #+BEGIN_SRC python
+   >>> MyClass.smeth()
+   This is a static method
+   >>> MyClass.cmeth()
+   This is a class method of <class '__main__.MyClass'>
+   #+END_SRC
+
+** __getattr__, __setattr__, and friends
+
+   It’s possible to intercept every attribute access on an object. Among other
+   things, you could use this to implement properties with old-style classes
+   (where property won’t necessarily work as it should). To have code executed
+   when an attribute is accessed, you must use a couple of magic methods. The
+   following four provide all the functionality you need (in old-style classes,
+   you only use the last three):
+
+   + *__getattribute__(self, name)*: Automatically called when the attribute name
+   is accessed. (This works correctly on new-style classes only.)
+
+   + *__getattr__(self, name)*: Automatically called when the attribute name is
+   accessed and the object has no such attribute.
+
+   + *__setattr__(self, name, value)*: Automatically called when an attempt is
+   made to bind the attribute name to value.
+
+   + *__delattr__(self, name)*: Automatically called when an attempt is made to
+   delete the attribute name.
+
+   Although a bit trickier to use (and in some ways less efficient) than property,
+   these magic methods are quite powerful, because you can write code in one of
+   these methods that deals with several properties. (If you have a choice,
+   though, stick with property.) Here is the Rectangle example again, this time
+   with magic methods:
+
+   #+BEGIN_SRC python
+   class Rectangle:
+       def __init__(self):
+           self.width = 0
+           self.height = 0
+       def __setattr__(self, name, value):
+           if name == 'size':
+               self.width, self.height = value
+           else:
+               self.__dict__[name] = value
+       def __getattr__(self, name):
+           if name == 'size':
+               return self.width, self.height
+           else:
+               raise AttributeError
+   #+END_SRC
+
+   As you can see, this version of the class needs to take care of additional
+   administrative details. When considering this code example, it’s important
+   to note the following:
+
+   + The *__setattr__* method is called even if the attribute in question is not
+   size. Therefore, the method must take both cases into consideration: if the
+   attribute is size, the same operation is performed as before; otherwise, the
+   magic attribute __dict__ is used. It contains a dictionary with all the
+   instance attributes. It is used instead of ordinary attribute assignment to
+   avoid having __setattr__ called again (which would cause the program to
+   loop endlessly).
+
+   + The *__getattr__* method is called only if a normal attribute is not found,
+   which means that if the given name is not size, the attribute does not exist,
+   and the method raises an AttributeError. This is important if you want the
+   class to work correctly with built-in functions such as hasattr and getattr.
+   If the name is size, the expression found in the previous implementation is
+   used.
+
+** Iterators
+
+*** the iterator protocol
+
+    To iterate means to repeat something several times—what you do with loops.
+    Until now I have iterated over only sequences and dictionaries in for loops,
+    but the truth is that you can iterate over other objects, too: objects that
+    implement the *__iter__* method.
+
+    The __iter__ method returns an iterator, which is any object with a method
+    called next, which is callable without any arguments. When you call the next
+    method, the iterator should return its “next value.” If the method is called,
+    and the iterator has no more values to return, it should raise a *StopIteration*
+    exception.
+
+    #+BEGIN_CENTER
+    *Note:* The iterator protocol is changed a bit in Python 3.0. In the new
+    protocol, iterator objects should have a method called *__next__* rather than
+    *next* , and a new built-in function called *next* may be used to access this
+    method. In other words, *next(it)* is the equivalent of the pre-3.0 *it.next()*.
+    #+END_CENTER
+
+    An iterator for these could be the following:
+
+    #+BEGIN_SRC python
+    class Fibs:
+        def __init__(self):
+            self.a = 0
+            self.b = 1
+        def next(self):
+            self.a, self.b = self.b, self.a+self.b
+            return self.a
+        def __iter__(self):
+            return self
+    #+END_SRC
+
+    #+BEGIN_CENTER
+    *Tip* The built-in function iter can be used to get an iterator from an iterable object:
+
+    >>> it = iter([1, 2, 3])
+    >>> it.next()
+    1
+    >>> it.next()
+    2
+    #+END_CENTER
+
+*** making sequences from iterators
+
+    #+INCLUDE: "./examples/iterators_sequences.py" src python
+
+** Generators
+
+   A generator is a kind of iterator that is defined with normal function syntax.
+
+*** making a generator
+
+    Making a generator is simple; it's just like making a function. A function that
+    flattens nested lists. The argument is a list that may look something like this:
+
+    #+BEGIN_SRC python
+    nested = [[1, 2], [3, 4], [5]]
+    #+END_SRC
+
+    Here's a solution:
+
+    #+BEGIN_SRC python
+    def flatten(nested):
+        for sublist in nested:
+            for element in sublist:
+                yield element
+    #+END_SRC
+
+    Any function that contains a *yield* statement is called a generator. And it’s
+    not just a matter of naming; it will behave quite differently from ordinary
+    functions. The difference is that instead of returning one value, as you do
+    with return, you can yield several values, one at a time. Each time a value
+    is yielded (with yield), the function /freezes/; that is, it stops its execution
+    at exactly that point and waits to be reawakened. When it is, it resumes its
+    execution at the point where it stopped.
+
+    #+BEGIN_SRC python
+    >>> nested = [[1, 2], [3, 4], [5]]
+    >>> for num in flatten(nested):
+        print num
+        ...
+    1
+    2
+    3
+    4
+    5
+    >>> list(flatten(nested))
+    [1, 2, 3, 4, 5]
+    #+END_SRC
+
+*** a recursive generator
+
+    #+BEGIN_SRC python
+    def flatten(nested):
+        try:
+            for sublist in nested:
+                for element in flatten(sublist):
+                    yield element
+        except TypeError:
+            yield nested
+    #+END_SRC
+
+    There is one problem with this, however. If nested is a string-like object
+    (string, Unicode, UserString, and so on), it is a sequence and will not
+    raise TypeError, yet you do not want to iterate over it.
+
+    #+BEGIN_CENTER
+    *Note:* There are two main reasons why you shouldn’t iterate over string-like
+    objects in the flatten function. First, you want to treat string-like objects
+    as atomic values, not as sequences that should be flattened.Second, /iterating
+    over them would actually lead to infinite recursion/ because the first element
+    of a string is another string of length one, and the first element of that
+    string is the string itself!
+    #+END_CENTER
+
+    To deal with this, you must add a test at the beginning of the generator.
+    Trying to concatenate the object with a string and seeing if a *TypeError*
+    results is the simplest and fastest way to check whether an object is string-like.
+
+    #+BEGIN_SRC python
+    def flatten(nested):
+        try:
+            # Don't iterate over string-like objects:
+            try:
+                nested + ''
+            except TypeError:
+                pass
+            else:
+                raise TypeError
+            for sublist in nested:
+                for element in flatten(sublist):
+                    yield element
+        except TypeError:
+            yield nested
 
     #+END_SRC
+
+*** generators in general
+
+    A generator is a function that contains the keyword *yield*. When it is called,
+    the code in the function body is not executed. Instead, an iterator is returned.
+    Each time a value is requested, the code in the generator is executed until a
+    *yield* or a *return* is encoutered. A *yield* means that a value should be yielded.
+    A *return* means that the generator should stop executing(without yielding anything
+    more; *return* can be called without arguments only when used inside a generator).
+
+    In other words, generators consist of two sepera components: the /generator-function/
+    and the /generaotr-iterator/. The generator-function is what is defined by the def
+    statement containing a *yield*. The generator-iterator is what this function returns.
+    In less precise term, these two entities are often treated as one and collectively
+    called a /generator/.
+
+*** generator methods
+
+    A relatively new feature of generators (added in Python 2.5) is the ability to
+    supply generators with values after they have started running. This takes the
+    form of a communications channel between the generator and the “outside world,”
+    with the following two end points:
+
+    + The outside world has access to a method on the generator called *send*, which
+    works just like *next*, except that it takes a single argument (the “message” to
+    send—an arbitrary object).
+
+    + Inside the suspended generator, *yield* may now be used as an expression, rather
+    than a statement. In other words, when the generator is resumed, yield returns
+    a value—the value sent from the outside through *send*. If next was used, yield
+    returns None.
+
+    Note that using send (rather than next) makes sense only after the generator
+    has been suspended (that is, after it has hit the first yield). If you need
+    to give some information to the generator before that, you can simply use the
+    parameters of the generator-function.
+
+    Here’s a rather silly example that illustrates the mechanism:
+
+    #+BEGIN_SRC python
+    def repeater(value):
+        while True:
+            new = (yield value)
+            if new is not None: value = new
+
+    r = repeater(42)
+    r.next()
+    42
+    r.send("Hello, world!")
+    "Hello, world!"
+    #+END_SRC
+
+    Generators also have two other methods (in Python 2.5 and later):
+
+    + The *throw* method (called with an exception type, an optional value and traceback
+    object) is used to raise an exception inside the generator (at the yield expression).
+
+    + The *close* method (called with no arguments) is used to stop the generator.
+
+** The Eight Queens
+
+
+* Batteries Included
+
+** modules
+
+*** modules are programs
+
+    Any Python program can be imported as a module.
